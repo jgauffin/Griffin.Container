@@ -8,7 +8,9 @@ namespace Griffin.Container
     /// </summary>
     public class InstanceStorage : IInstanceStorage
     {
-        readonly Dictionary<object, object> _items = new Dictionary<object, object>();
+        private readonly Dictionary<object, object> _items = new Dictionary<object, object>();
+
+        #region IInstanceStorage Members
 
         /// <summary>
         /// Store a new isntance
@@ -46,5 +48,7 @@ namespace Griffin.Container
 
             _items.Clear();
         }
+
+        #endregion
     }
 }

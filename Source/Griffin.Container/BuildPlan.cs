@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
+using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container
 {
@@ -10,54 +10,54 @@ namespace Griffin.Container
     public class BuildPlan
     {
         private readonly Type _concreteType;
-        private readonly Func<IInstanceStorage, IInstanceStorage, object> _factory;
-        private readonly object _instance;
-        private BuildPlan[] _parameters;
+        private readonly IInstanceStrategy _instanceStrategy;
         private ObjectActivator _factoryMethod;
+        private BuildPlan[] _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
         /// <param name="lifetime">The lifetime.</param>
-        public BuildPlan(Type concreteType, Lifetime lifetime)
+        /// <param name="instanceStrategy">Used to either fetch or create an instance.</param>
+        public BuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy)
         {
+            Lifetime = lifetime;
             if (concreteType == null) throw new ArgumentNullException("concreteType");
             _concreteType = concreteType;
-            switch (lifetime)
-            {
-                case Lifetime.Singleton:
-                    _factory = GetSingleton;
-                    break;
-                case Lifetime.Transient:
-                    _factory = GetTransient;
-                    break;
-                case Lifetime.Scoped:
-                    _factory = GetScoped;
-                    break;
-                default:
-                    throw new NotSupportedException(string.Format("{0} is not supported.", lifetime));
-            }
+            _instanceStrategy = instanceStrategy;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
-        /// <param name="instance">Singleton.</param>
-        public BuildPlan(Type concreteType, object instance)
+        /// <param name="instanceStrategy">Used to determine if a new instance or a stored one should be returned.</param>
+        public BuildPlan(Type concreteType, IInstanceStrategy instanceStrategy)
         {
             if (concreteType == null) throw new ArgumentNullException("concreteType");
             _concreteType = concreteType;
-            _instance = instance;
-            _factory = (storage, instanceStorage) => instance;
+            _instanceStrategy = instanceStrategy;
         }
+
+        /// <summary>
+        /// Gets lifetime of object
+        /// </summary>
+        public Lifetime Lifetime { get; private set; }
 
 
         /// <summary>
         /// Gets the constructor which was chosen
         /// </summary>
         public ConstructorInfo Constructor { get; private set; }
+
+        /// <summary>
+        /// Gets type which should be created.
+        /// </summary>
+        public Type ConcreteType
+        {
+            get { return _concreteType; }
+        }
 
         /// <summary>
         /// Sets the constructor to use
@@ -70,7 +70,6 @@ namespace Griffin.Container
             _factoryMethod = constructor.GetActivator();
         }
 
-        
 
         /// <summary>
         /// Add another constructor parameter plan
@@ -85,79 +84,72 @@ namespace Griffin.Container
         /// <summary>
         /// Get the instance.
         /// </summary>
-        /// <param name="singletons">Singleton storage</param>
-        /// <param name="scoped">Scoped storage. Should be set to null when the parent container is used for service location.</param>
+        /// <param name="context">Context used to create instances.</param>
         /// <returns>Instance if found; otherwise null.</returns>
-        public virtual object GetInstance(IInstanceStorage singletons, IInstanceStorage scoped)
+        public virtual object GetInstance(CreateContext context)
         {
-            return _factory(singletons, scoped);
+            var strategyContext = new InstanceStrategyContext(this, () => Create(context))
+                                      {
+                                          ScopedStorage = context.Scoped,
+                                          SingletonStorage = context.Singletons,
+                                          Container = context.Container
+                                      };
+            return _instanceStrategy.GetInstance(strategyContext);
         }
 
-        /// <summary>
-        /// Get object from singleton storage
-        /// </summary>
-        /// <param name="singletons">Storage for singletons (parent container)</param>
-        /// <param name="scoped">Storage for scoped objects.</param>
-        /// <returns>Object if found; otherwise null.</returns>
-        protected virtual object GetSingleton(IInstanceStorage singletons, IInstanceStorage scoped)
-        {
-            var existing = singletons.Retreive(this);
-            if (existing != null)
-                return existing;
-
-            existing = Create(singletons, scoped);
-
-            singletons.Store(this, existing);
-            return existing;
-        }
-
-        /// <summary>
-        /// Get a new object each time
-        /// </summary>
-        /// <param name="singletons">Storage for singletons (parent container)</param>
-        /// <param name="scoped">Storage for scoped objects.</param>
-        /// <returns>Object</returns>
-        protected virtual object GetTransient(IInstanceStorage singletons, IInstanceStorage scoped)
-        {
-            return Create(singletons, scoped);
-        }
-
-        /// <summary>
-        /// Get object from the scoped storage
-        /// </summary>
-        /// <param name="singletons">Storage for singletons (parent container)</param>
-        /// <param name="scoped">Storage for scoped objects.</param>
-        /// <returns>Object if found; otherwise null.</returns>
-        protected virtual object GetScoped(IInstanceStorage singletons, IInstanceStorage scoped)
-        {
-            if (scoped == null)
-                throw new InvalidOperationException("Class '" + _concreteType.FullName + "' is a scoped object and can therefore not be created from the parent container.");
-
-            var existing = scoped.Retreive(this);
-            if (existing != null)
-                return existing;
-
-            existing = Create(singletons, scoped);
-
-            scoped.Store(this, existing);
-            return existing;
-        }
 
         /// <summary>
         /// Construct a new object
         /// </summary>
-        /// <param name="singletons">Storage for singletons (parent container)</param>
-        /// <param name="scoped">Storage for scoped objects.</param>
+        /// <param name="context">Context used to create instances.</param>
         /// <returns>Created instance.</returns>
-        protected virtual object Create(IInstanceStorage singletons, IInstanceStorage scoped)
+        protected virtual object Create(CreateContext context)
         {
+            context.Add(this);
+
             var parameters = new object[Constructor.GetParameters().Length];
             for (var i = 0; i < parameters.Length; i++)
             {
-                parameters[i] = _parameters[i].GetInstance(singletons, scoped);
+                parameters[i] = _parameters[i].GetInstance(context);
             }
 
             return _factoryMethod(parameters);
         }
+
+        #region Nested type: InstanceStrategyContext
+
+        private class InstanceStrategyContext : IInstanceStrategyContext
+        {
+            private readonly BuildPlan _bp;
+            private readonly Func<object> _factory;
+
+            public InstanceStrategyContext(BuildPlan bp, Func<object> factory)
+            {
+                _bp = bp;
+                _factory = factory;
+            }
+
+            #region IInstanceStrategyContext Members
+
+            public BuildPlan BuildPlan
+            {
+                get { return _bp; }
+            }
+
+            public IInstanceStorage SingletonStorage { get; set; }
+
+            public IInstanceStorage ScopedStorage { get; set; }
+
+            public IServiceLocator Container { get; set; }
+
+            public object CreateInstance()
+            {
+                return _factory();
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 }

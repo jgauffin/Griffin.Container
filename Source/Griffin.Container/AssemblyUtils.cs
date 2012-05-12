@@ -16,7 +16,7 @@ namespace Griffin.Container
         /// <param name="path">Directory to scan</param>
         /// <param name="filePattern">Pattern to match. Same format as for <see cref="Directory.GetFiles(string, string)"/></param>
         /// <returns>All matching assemblies</returns>
-        public static IEnumerable<Assembly>  LoadAssemblies(string path, string filePattern)
+        public static IEnumerable<Assembly> LoadAssemblies(string path, string filePattern)
         {
             if (path == null) throw new ArgumentNullException("path");
             if (filePattern == null) throw new ArgumentNullException("filePattern");
@@ -26,14 +26,14 @@ namespace Griffin.Container
                 Assembly assembly;
                 try
                 {
-                    assembly= Assembly.Load(fullPath);
+                    assembly = Assembly.Load(fullPath);
                     if (assembly.IsDynamic)
                         continue;
-
                 }
-                catch(ReflectionTypeLoadException err)
+                catch (ReflectionTypeLoadException err)
                 {
-                    throw new InvalidOperationException(string.Format("Failed to load assembly named '{0}'.", fullPath), err);
+                    throw new InvalidOperationException(
+                        string.Format("Failed to load assembly named '{0}'.", fullPath), err);
                 }
 
                 yield return assembly;

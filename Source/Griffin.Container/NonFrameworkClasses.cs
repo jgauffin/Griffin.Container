@@ -8,6 +8,8 @@ namespace Griffin.Container
     /// <remarks>This filter ignores all .NET Framework classes.</remarks>
     public class NonFrameworkClasses : IServiceFilter
     {
+        #region IServiceFilter Members
+
         /// <summary>
         /// Determines if a concrete can be registered as the specified type.
         /// </summary>
@@ -28,5 +30,7 @@ namespace Griffin.Container
 
             return true;
         }
+
+        #endregion
     }
 }

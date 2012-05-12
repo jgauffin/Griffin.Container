@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Griffin.Container
+﻿namespace Griffin.Container
 {
     /// <summary>
     /// Used to create a storage where all instances are saved.

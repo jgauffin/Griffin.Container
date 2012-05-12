@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container
 {
@@ -21,7 +22,6 @@ namespace Griffin.Container
         /// <param name="lifetime">The lifetime.</param>
         public ComponentRegistration(Type concreteType, Lifetime lifetime)
         {
-            if (concreteType == null) throw new ArgumentNullException("concreteType");
             _lifetime = lifetime;
             ConcreteType = concreteType;
         }
@@ -32,18 +32,24 @@ namespace Griffin.Container
         public Type ConcreteType { get; private set; }
 
         /// <summary>
+        /// Gets or sets strategy used to handle the instance
+        /// </summary>
+        public IInstanceStrategy InstanceStrategy { get; set; }
+
+        /// <summary>
         /// Gets services.
         /// </summary>
-        public IEnumerable<Type>  Services {get { return _services; }}
+        public IEnumerable<Type> Services
+        {
+            get { return _services; }
+        }
 
         /// <summary>
         /// Gets instance lifetime
         /// </summary>
         public Lifetime Lifetime
         {
-            get {
-                return _lifetime;
-            }
+            get { return _lifetime; }
         }
 
         /// <summary>

@@ -5,6 +5,8 @@ namespace Griffin.Container
     /// </summary>
     public class DefaultInstanceStorageFactory : IInstanceStorageFactory
     {
+        #region IInstanceStorageFactory Members
+
         /// <summary>
         /// Create storage used for the parent container
         /// </summary>
@@ -22,5 +24,7 @@ namespace Griffin.Container
         {
             return new InstanceStorage();
         }
+
+        #endregion
     }
 }

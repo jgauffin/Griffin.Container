@@ -17,7 +17,7 @@ namespace Griffin.Container
         /// <param name="serviceMappings">The service mappings.</param>
         /// <param name="parentStorage">The parent storage.</param>
         /// <param name="childStorage">The child storage.</param>
-        public ChildContainer(Dictionary<Type, List<BuildPlan>> serviceMappings, IInstanceStorage parentStorage,
+        public ChildContainer(IDictionary<Type, List<BuildPlan>> serviceMappings, IInstanceStorage parentStorage,
                               IInstanceStorage childStorage) : base(serviceMappings)
         {
             _parentStorage = parentStorage;
@@ -44,7 +44,8 @@ namespace Griffin.Container
         /// <returns>Created instance (throw exception if it can't be built).</returns>
         protected override object GetInstance(BuildPlan bp)
         {
-            return bp.GetInstance(_parentStorage, _childStorage);
+            var context = new CreateContext {Container = this, Scoped = _childStorage, Singletons = _parentStorage};
+            return bp.GetInstance(context);
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Griffin.Container
     /// </summary>
     public abstract class ContainerBase
     {
-        private readonly Dictionary<Type, List<BuildPlan>> _serviceMappings;
+        private readonly IDictionary<Type, List<BuildPlan>> _serviceMappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBase"/> class.
         /// </summary>
         /// <param name="serviceMappings">The service mappings.</param>
-        protected ContainerBase(Dictionary<Type, List<BuildPlan>> serviceMappings)
+        protected ContainerBase(IDictionary<Type, List<BuildPlan>> serviceMappings)
         {
             if (serviceMappings == null) throw new ArgumentNullException("serviceMappings");
             _serviceMappings = serviceMappings;
@@ -23,7 +23,7 @@ namespace Griffin.Container
         /// <summary>
         /// Get all service mappings
         /// </summary>
-        protected Dictionary<Type, List<BuildPlan>> ServiceMappings
+        protected IDictionary<Type, List<BuildPlan>> ServiceMappings
         {
             get { return _serviceMappings; }
         }
@@ -46,7 +46,7 @@ namespace Griffin.Container
         /// <returns>object which implements the service.</returns>
         public T Resolve<T>() where T : class
         {
-            return (T)Resolve(typeof (T));
+            return (T) Resolve(typeof (T));
         }
 
         /// <summary>
@@ -66,12 +66,18 @@ namespace Griffin.Container
             return instance;
         }
 
+        /// <summary>
+        /// Gets the build plans for all concretes that implements a service.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <returns>Build plans</returns>
         protected virtual List<BuildPlan> GetBuildPlans(Type service)
         {
             if (service == null) throw new ArgumentNullException("service");
             List<BuildPlan> bps;
             if (!ServiceMappings.TryGetValue(service, out bps))
-                throw new InvalidOperationException(string.Format("Service {0} has not been registered.", service.FullName));
+                throw new InvalidOperationException(string.Format("Service {0} has not been registered.",
+                                                                  service.FullName));
 
             return bps;
         }
@@ -93,9 +99,9 @@ namespace Griffin.Container
             var bps = GetBuildPlans(typeof (T));
 
             var services = new T[bps.Count];
-            for (int i = 0; i < services.Length; i++)
+            for (var i = 0; i < services.Length; i++)
             {
-                services[i] = (T)GetInstance(bps[i]);
+                services[i] = (T) GetInstance(bps[i]);
             }
 
             return services;
@@ -111,7 +117,7 @@ namespace Griffin.Container
             var bps = GetBuildPlans(service);
 
             var services = new object[bps.Count];
-            for (int i = 0; i < services.Length; i++)
+            for (var i = 0; i < services.Length; i++)
             {
                 services[i] = GetInstance(bps[i]);
             }

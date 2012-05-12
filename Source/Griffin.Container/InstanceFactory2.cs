@@ -15,6 +15,11 @@ namespace Griffin.Container
     /// </summary>
     public static class ConstructorExtensions
     {
+        /// <summary>
+        /// Gets activator (instance factory method).
+        /// </summary>
+        /// <param name="ctor">The ctor.</param>
+        /// <returns>The activator</returns>
         public static ObjectActivator GetActivator(this ConstructorInfo ctor)
         {
             var paramsInfo = ctor.GetParameters();

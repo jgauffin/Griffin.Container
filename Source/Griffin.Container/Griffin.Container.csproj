@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Griffin.Container.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,9 +44,19 @@
     <Compile Include="AssemblyUtils.cs" />
     <Compile Include="BuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
+    <Compile Include="CircularDependenciesException.cs" />
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
+    <Compile Include="CreateContext.cs" />
     <Compile Include="DefaultInstanceStorageFactory.cs" />
+    <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
+    <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
+    <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />
+    <Compile Include="InstanceStrategies\IInstanceStrategyContext.cs" />
+    <Compile Include="InstanceStrategies\NamespaceDoc.cs" />
+    <Compile Include="InstanceStrategies\ScopedInstanceStrategy.cs" />
+    <Compile Include="InstanceStrategies\SingletonFactoryStrategy.cs" />
+    <Compile Include="InstanceStrategies\TransientInstanceStrategy.cs" />
     <Compile Include="IContainerModule.cs" />
     <Compile Include="IInstanceStorageFactory.cs" />
     <Compile Include="InstanceFactory2.cs" />
@@ -69,6 +80,9 @@
     <Compile Include="NonFrameworkClasses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeResolutionFailedException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Registration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

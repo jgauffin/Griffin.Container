@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container
 {
@@ -10,10 +11,11 @@ namespace Griffin.Container
     /// </summary>
     public class ContainerBuilder : IContainerBuilder
     {
-        readonly Dictionary<Type, BuildPlan> _buildPlans = new Dictionary<Type, BuildPlan>();
-        readonly Dictionary<Type, List<BuildPlan>> _serviceMappings = new Dictionary<Type, List<BuildPlan>>();
-        IContainerRegistrar _registrar;
+        private readonly Dictionary<Type, BuildPlan> _buildPlans = new Dictionary<Type, BuildPlan>();
+        private readonly Dictionary<Type, List<BuildPlan>> _serviceMappings = new Dictionary<Type, List<BuildPlan>>();
+        private IContainerRegistrar _registrar;
 
+        #region IContainerBuilder Members
 
         /// <summary>
         /// Builds a container using the specified registrations.
@@ -27,11 +29,13 @@ namespace Griffin.Container
 
             _registrar = registrar;
             GenerateBuildPlans(registrar);
-            BindPlans();
             MapServices();
+            BindPlans();
 
             return new Container(_serviceMappings);
         }
+
+        #endregion
 
         private void MapServices()
         {
@@ -58,12 +62,40 @@ namespace Griffin.Container
         {
             foreach (var buildPlan in _buildPlans.Values)
             {
-                var parameters = buildPlan.Constructor.GetParameters();
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    var bp = _buildPlans[parameters[i].ParameterType];
-                    buildPlan.AddConstructorPlan(i, bp);
-                }
+                BindBuildPlan(buildPlan);
+            }
+        }
+
+        private void BindBuildPlan(BuildPlan buildPlan)
+        {
+            var parameters = buildPlan.Constructor.GetParameters();
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                List<BuildPlan> bp;
+                if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out bp))
+                    throw new InvalidOperationException(string.Format("Failed to find service {0}.",
+                                                                      parameters[i].ParameterType));
+                buildPlan.AddConstructorPlan(i, bp[0]);
+            }
+        }
+
+        /// <summary>
+        /// Used to create the correct instance strategy
+        /// </summary>
+        /// <param name="registration">Registration information</param>
+        /// <returns>Strategy to use.</returns>
+        protected virtual IInstanceStrategy CreateStrategy(ComponentRegistration registration)
+        {
+            switch (registration.Lifetime)
+            {
+                case Lifetime.Transient:
+                    return new TransientInstanceStrategy();
+                case Lifetime.Scoped:
+                    return new ScopedInstanceStrategy(registration.ConcreteType);
+                case Lifetime.Singleton:
+                    return new SingletonFactoryStrategy();
+                default:
+                    throw new NotSupportedException("Unsupported lifetime: " + registration.Lifetime);
             }
         }
 
@@ -75,7 +107,8 @@ namespace Griffin.Container
         {
             foreach (var registration in registrar.Registrations)
             {
-                var buildPlan = new BuildPlan(registration.ConcreteType, registration.Lifetime);
+                var strategy = registration.InstanceStrategy ?? CreateStrategy(registration);
+                var buildPlan = new BuildPlan(registration.ConcreteType, registration.Lifetime, strategy);
 
                 ConstructorInfo constructor;
                 var error = TryGetConstructor(registration.ConcreteType, out constructor);
@@ -118,7 +151,5 @@ namespace Griffin.Container
         }
 
         //public class FindConstructor
-
-
     }
 }

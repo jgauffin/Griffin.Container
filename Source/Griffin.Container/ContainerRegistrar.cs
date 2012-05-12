@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container
 {
@@ -136,6 +137,20 @@ namespace Griffin.Container
         /// <summary>
         /// Register a type
         /// </summary>
+        /// <typeparam name="TService">Requested service</typeparam>
+        /// <param name="factory">Delegate used to produce the instance.</param>
+        /// <param name="lifetime">Lifetime of the returned object</param>
+        public void RegisterType<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped)
+        {
+            var registration = CreateRegistration(null, lifetime);
+            registration.AddService(typeof (TService));
+            registration.InstanceStrategy = new DelegateStrategy(factory, lifetime);
+            Add(registration);
+        }
+
+        /// <summary>
+        /// Register a type
+        /// </summary>
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
@@ -157,15 +172,35 @@ namespace Griffin.Container
             Add(registration);
         }
 
+
+        /// <summary>
+        /// Register a type
+        /// </summary>
+        /// <param name="service">Services which is requested from the container.</param>
+        /// <param name="factory">Delegate used to produce the instance.</param>
+        /// <param name="lifetime">Lifetime of the object that implements the service.</param>
+        public void RegisterType(Type service, Func<IServiceLocator, object> factory,
+                                 Lifetime lifetime = Lifetime.Scoped)
+        {
+            var registration = CreateRegistration(null, lifetime);
+            registration.AddService(service);
+            registration.InstanceStrategy = new DelegateStrategy(factory, lifetime);
+            Add(registration);
+        }
+
         /// <summary>
         /// Register a type
         /// </summary>
         /// <param name="service">Type which will be requested</param>
-        /// <param name="clazz">Class which will be constructed and returned.</param>
+        /// <param name="concrete">Class which will be constructed and returned.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service</param>
-        public void RegisterType(Type service, Type clazz, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Scoped)
         {
-            var registration = CreateRegistration(clazz, lifetime);
+            if (!service.IsAssignableFrom(concrete))
+                throw new InvalidOperationException(string.Format("Type {0} is not assignable from {1}.",
+                                                                  service.FullName, concrete.FullName));
+
+            var registration = CreateRegistration(concrete, lifetime);
             registration.AddService(service);
             Add(registration);
         }
@@ -177,16 +212,23 @@ namespace Griffin.Container
         /// <param name="instance">Object which will be returned</param>
         public void RegisterInstance<TService>(TService instance) where TService : class
         {
+            var registration = CreateRegistration(null, Lifetime.Singleton);
+            registration.AddService(typeof (TService));
+            registration.InstanceStrategy = new ExistingInstanceStrategy(instance);
+            Add(registration);
         }
 
         /// <summary>
         /// Register an singleton
         /// </summary>
         /// <param name="service">Type which will be requested</param>
-        /// <param name="clazz">Object which will be returned</param>
-        public void RegisterInstance(Type service, object clazz)
+        /// <param name="instance">Object which will be returned</param>
+        public void RegisterInstance(Type service, object instance)
         {
-            throw new NotImplementedException();
+            var registration = CreateRegistration(null, Lifetime.Singleton);
+            registration.AddService(service);
+            registration.InstanceStrategy = new ExistingInstanceStrategy(instance);
+            Add(registration);
         }
 
         #endregion
