@@ -40,5 +40,5 @@ source/Griffin.MvcContrib.Admin/App_Data/*.dat
 source/Samples/MvcContrib.Admin/AdminTest/Data/
 */packages/*
 !*NuGet.exe
-source/Griffin.MvcContrib/Help/*
-!source/Griffin.MvcContrib/Help/documentation.chm
+source/Griffin.Container/Help/*
+!source/Griffin.Container/Help/documentation.chm

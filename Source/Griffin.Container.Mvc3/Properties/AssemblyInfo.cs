@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Griffin.Container")]
-[assembly: AssemblyDescription("Inversion of Control Container")]
+[assembly: AssemblyTitle("Griffin.Container.Mvc3")]
+[assembly: AssemblyDescription("ASP.NET MVC3 integration package for Griffin.Container.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Griffin.Container")]
-[assembly: AssemblyCopyright("Copyright ©  Jonas Gauffin 2012")]
+[assembly: AssemblyProduct("Griffin.Container.Mvc3")]
+[assembly: AssemblyCopyright("Copyright © Jonas Gauffin 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("191e2421-489a-4d43-9c2d-565e36199eae")]
+[assembly: Guid("10be611d-1435-43fb-964f-bfaef18c1de9")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.1.1.0")]
-[assembly: AssemblyFileVersion("0.1.1.0")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]

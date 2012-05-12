@@ -106,5 +106,7 @@ namespace Griffin.Container
         /// <param name="service">Type which will be requested</param>
         /// <param name="concrete">Object which will be returned</param>
         void RegisterInstance(Type service, object concrete);
+
+
     }
 }
