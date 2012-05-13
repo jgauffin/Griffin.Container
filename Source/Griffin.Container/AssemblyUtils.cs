@@ -26,7 +26,7 @@ namespace Griffin.Container
                 Assembly assembly;
                 try
                 {
-                    assembly = Assembly.Load(fullPath);
+                    assembly = Assembly.LoadFrom(fullPath);
                     if (assembly.IsDynamic)
                         continue;
                 }

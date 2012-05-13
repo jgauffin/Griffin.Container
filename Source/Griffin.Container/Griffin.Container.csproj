@@ -50,6 +50,9 @@
     <Compile Include="ContainerBase.cs" />
     <Compile Include="CreateContext.cs" />
     <Compile Include="DefaultInstanceStorageFactory.cs" />
+    <Compile Include="DomainEvents\DomainEvent.cs" />
+    <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
+    <Compile Include="DomainEvents\NamespaceDoc.cs" />
     <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
     <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />

@@ -14,6 +14,8 @@ namespace Griffin.Container
         private readonly IInstanceStorageFactory _factory;
         private readonly IInstanceStorage _storage;
 
+        [ThreadStatic] static private IChildContainer _childContainer;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
         /// </summary>
@@ -39,6 +41,14 @@ namespace Griffin.Container
             _storage = factory.CreateParent();
         }
 
+        /// <summary>
+        /// Gets current child container (if any).
+        /// </summary>
+        internal static IChildContainer ChildContainer
+        {
+            get { return _childContainer; }
+        }
+
         #region IParentContainer Members
 
         /// <summary>
@@ -47,7 +57,7 @@ namespace Griffin.Container
         /// <returns>Created container.</returns>
         public virtual IChildContainer CreateChildContainer()
         {
-            return new ChildContainer(ServiceMappings, _storage, _factory.CreateScoped());
+            return new ChildContainer(ServiceMappings, _storage, _factory.CreateScoped(), () => _childContainer = null);
         }
 
         #endregion

@@ -9,6 +9,7 @@ namespace Griffin.Container
     public class ChildContainer : ContainerBase, IChildContainer
     {
         private readonly IInstanceStorage _childStorage;
+        private readonly Action _disposedCallback;
         private readonly IInstanceStorage _parentStorage;
 
         /// <summary>
@@ -17,11 +18,13 @@ namespace Griffin.Container
         /// <param name="serviceMappings">The service mappings.</param>
         /// <param name="parentStorage">The parent storage.</param>
         /// <param name="childStorage">The child storage.</param>
+        /// <param name="disposedCallback">Invoked when the container is disposed.</param>
         public ChildContainer(IDictionary<Type, List<BuildPlan>> serviceMappings, IInstanceStorage parentStorage,
-                              IInstanceStorage childStorage) : base(serviceMappings)
+                              IInstanceStorage childStorage, Action disposedCallback) : base(serviceMappings)
         {
             _parentStorage = parentStorage;
             _childStorage = childStorage;
+            _disposedCallback = disposedCallback;
         }
 
         #region IChildContainer Members
@@ -33,6 +36,8 @@ namespace Griffin.Container
         public void Dispose()
         {
             _childStorage.Dispose();
+            if (_disposedCallback != null)
+                _disposedCallback();
         }
 
         #endregion
