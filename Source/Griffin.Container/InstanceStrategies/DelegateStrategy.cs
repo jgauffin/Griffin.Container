@@ -60,7 +60,7 @@ namespace Griffin.Container.InstanceStrategies
             if (existing != null)
                 return existing;
 
-            existing = context.CreateInstance();
+            existing = _factory(context.Container);
             context.SingletonStorage.Store(context.BuildPlan, existing);
             return existing;
         }
@@ -74,7 +74,7 @@ namespace Griffin.Container.InstanceStrategies
             if (existing != null)
                 return existing;
 
-            existing = context.CreateInstance();
+            existing = _factory(context.Container);
             context.ScopedStorage.Store(context.BuildPlan, existing);
             return existing;
         }

@@ -38,7 +38,7 @@ namespace Griffin.Container.Mvc3
         /// <param name="serviceType">The type of the requested service or object.</param>
         public object GetService(Type serviceType)
         {
-            return _childContainer.Resolve(serviceType);
+            return !ChildContainer.IsRegistered(serviceType) ? null : ChildContainer.Resolve(serviceType);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Griffin.Container.Mvc3
         /// <param name="serviceType">The type of the requested services.</param>
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            return _childContainer.ResolveAll(serviceType);
+            return !ChildContainer.IsRegistered(serviceType) ? new object[0] : ChildContainer.ResolveAll(serviceType);
         }
 
         #endregion

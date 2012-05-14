@@ -135,7 +135,7 @@ namespace Griffin.Container
 
             #region IInstanceStrategyContext Members
 
-            public ConcreteBuildPlan BuildPlan
+            public IBuildPlan BuildPlan
             {
                 get { return _bp; }
             }

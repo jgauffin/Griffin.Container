@@ -32,6 +32,7 @@ namespace Griffin.Container
         {
             var strategyContext = new ExternalInstanceStrategyContext
             {
+                BuildPlan = this,
                 ScopedStorage = context.Scoped,
                 SingletonStorage = context.Singletons,
                 Container = context.Container
@@ -42,7 +43,7 @@ namespace Griffin.Container
 
         class ExternalInstanceStrategyContext : IInstanceStrategyContext
         {
-            public ConcreteBuildPlan BuildPlan { get;  set; }
+            public IBuildPlan BuildPlan { get;  set; }
             public IInstanceStorage SingletonStorage { get;  set; }
             public IInstanceStorage ScopedStorage { get;  set; }
             public IServiceLocator Container { get;  set; }
