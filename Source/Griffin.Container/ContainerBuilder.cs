@@ -110,14 +110,25 @@ namespace Griffin.Container
                 var strategy = registration.InstanceStrategy ?? CreateStrategy(registration);
                 var buildPlan = new BuildPlan(registration.ConcreteType, registration.Lifetime, strategy);
 
-                ConstructorInfo constructor;
-                var error = TryGetConstructor(registration.ConcreteType, out constructor);
-                if (error != null)
-                    throw new TypeResolutionFailedException(error);
+                if (!strategy.IsInstanceFactory)
+                {
+                    ConstructorInfo constructor;
+                    var error = TryGetConstructor(registration.ConcreteType, out constructor);
+                    if (error != null)
+                        throw new TypeResolutionFailedException(error);
 
-                buildPlan.SetConstructor(constructor);
-
-                _buildPlans.Add(registration.ConcreteType, buildPlan);
+                    buildPlan.SetConstructor(constructor);
+                    _buildPlans.Add(registration.ConcreteType, buildPlan);
+                }
+                else
+                {
+                    // service registration
+                    foreach (var service in registration.Services)
+                    {
+                        _serviceMappings.Add(service, buildPlan);
+                    }
+                    
+                }
             }
         }
 

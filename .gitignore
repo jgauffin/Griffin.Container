@@ -42,3 +42,4 @@ source/Samples/MvcContrib.Admin/AdminTest/Data/
 !*NuGet.exe
 source/Griffin.Container/Help/*
 !source/Griffin.Container/Help/documentation.chm
+Source/Griffin.Container/Griffin.Container.shfbproj_jgauffin

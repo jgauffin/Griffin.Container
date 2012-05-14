@@ -43,6 +43,15 @@ namespace Griffin.Container.InstanceStrategies
             throw new NotSupportedException(string.Format("Lifetime not supported: {0}.", _lifetime));
         }
 
+        /// <summary>
+        /// Gets if the strategy can generate an instance by itself.
+        /// </summary>
+        /// <remarks>true if the strategy holds an pre-created instance or if it can create an instance without the build plan.</remarks>
+        public bool IsInstanceFactory
+        {
+            get { return true; }
+        }
+
         #endregion
 
         private object GetSingleton(IInstanceStrategyContext context)

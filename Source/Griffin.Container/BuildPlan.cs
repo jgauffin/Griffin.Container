@@ -22,8 +22,10 @@ namespace Griffin.Container
         /// <param name="instanceStrategy">Used to either fetch or create an instance.</param>
         public BuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy)
         {
+            if( concreteType == null && instanceStrategy == null)
+                throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
+
             Lifetime = lifetime;
-            if (concreteType == null) throw new ArgumentNullException("concreteType");
             _concreteType = concreteType;
             _instanceStrategy = instanceStrategy;
         }
@@ -35,7 +37,8 @@ namespace Griffin.Container
         /// <param name="instanceStrategy">Used to determine if a new instance or a stored one should be returned.</param>
         public BuildPlan(Type concreteType, IInstanceStrategy instanceStrategy)
         {
-            if (concreteType == null) throw new ArgumentNullException("concreteType");
+            if (concreteType == null && instanceStrategy == null)
+                throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
             _concreteType = concreteType;
             _instanceStrategy = instanceStrategy;
         }
@@ -54,6 +57,7 @@ namespace Griffin.Container
         /// <summary>
         /// Gets type which should be created.
         /// </summary>
+        /// <remarks>Might be null if an instanceStrategy have been specified in the BuildPlan constructor.</remarks>
         public Type ConcreteType
         {
             get { return _concreteType; }
