@@ -43,16 +43,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyUtils.cs" />
-    <Compile Include="BuildPlan.cs" />
+    <Compile Include="ConcreteBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
     <Compile Include="CircularDependenciesException.cs" />
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
+    <Compile Include="ExternalBuildPlan.cs" />
     <Compile Include="CreateContext.cs" />
     <Compile Include="DefaultInstanceStorageFactory.cs" />
     <Compile Include="DomainEvents\DomainEvent.cs" />
     <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
     <Compile Include="DomainEvents\NamespaceDoc.cs" />
+    <Compile Include="IBuildPlan.cs" />
     <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
     <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />

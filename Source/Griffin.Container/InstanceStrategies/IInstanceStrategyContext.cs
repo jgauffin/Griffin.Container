@@ -8,7 +8,7 @@ namespace Griffin.Container.InstanceStrategies
         /// <summary>
         /// Gets build plan
         /// </summary>
-        BuildPlan BuildPlan { get; }
+        ConcreteBuildPlan BuildPlan { get; }
 
         /// <summary>
         /// Storage for singletons.

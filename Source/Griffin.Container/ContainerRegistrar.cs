@@ -33,6 +33,17 @@ namespace Griffin.Container
             _serviceFilter = new NonFrameworkClasses();
         }
 
+        /// <summary>
+        /// Builds the container directly.
+        /// </summary>
+        /// <returns>Generated container.</returns>
+        public IParentContainer Build()
+        {
+            var builder = new ContainerBuilder();
+            return builder.Build(this);
+        }
+
+
         #region IContainerRegistrar Members
 
         /// <summary>
@@ -129,9 +140,9 @@ namespace Griffin.Container
         /// </summary>
         /// <typeparam name="TConcrete">Object to create. Register it's implemented interfaces</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class
+        public void RegisterConcrete<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class
         {
-            RegisterType(typeof (TConcrete), lifetime);
+            RegisterConcrete(typeof (TConcrete), lifetime);
         }
 
         /// <summary>
@@ -140,7 +151,7 @@ namespace Griffin.Container
         /// <typeparam name="TService">Requested service</typeparam>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the returned object</param>
-        public void RegisterType<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterService<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped)
         {
             var registration = CreateRegistration(null, lifetime);
             registration.AddService(typeof (TService));
@@ -165,7 +176,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="concrete">Type to create, will be registered as the implemented interfaces.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType(Type concrete, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterConcrete(Type concrete, Lifetime lifetime = Lifetime.Scoped)
         {
             var registration = CreateRegistration(concrete, lifetime);
             registration.AddServices(_serviceFilter);
@@ -179,7 +190,7 @@ namespace Griffin.Container
         /// <param name="service">Services which is requested from the container.</param>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType(Type service, Func<IServiceLocator, object> factory,
+        public void RegisterService(Type service, Func<IServiceLocator, object> factory,
                                  Lifetime lifetime = Lifetime.Scoped)
         {
             var registration = CreateRegistration(null, lifetime);

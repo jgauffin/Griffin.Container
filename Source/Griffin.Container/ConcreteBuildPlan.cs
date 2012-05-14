@@ -5,22 +5,22 @@ using Griffin.Container.InstanceStrategies;
 namespace Griffin.Container
 {
     /// <summary>
-    /// Used to build a component
+    /// A plan telling how concrete classes should be built.
     /// </summary>
-    public class BuildPlan
+    public class ConcreteBuildPlan : IBuildPlan
     {
         private readonly Type _concreteType;
         private readonly IInstanceStrategy _instanceStrategy;
         private ObjectActivator _factoryMethod;
-        private BuildPlan[] _parameters;
+        private IBuildPlan[] _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BuildPlan"/> class.
+        /// Initializes a new instance of the <see cref="ConcreteBuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="instanceStrategy">Used to either fetch or create an instance.</param>
-        public BuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy)
+        public ConcreteBuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy)
         {
             if( concreteType == null && instanceStrategy == null)
                 throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
@@ -31,11 +31,11 @@ namespace Griffin.Container
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BuildPlan"/> class.
+        /// Initializes a new instance of the <see cref="ConcreteBuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
         /// <param name="instanceStrategy">Used to determine if a new instance or a stored one should be returned.</param>
-        public BuildPlan(Type concreteType, IInstanceStrategy instanceStrategy)
+        public ConcreteBuildPlan(Type concreteType, IInstanceStrategy instanceStrategy)
         {
             if (concreteType == null && instanceStrategy == null)
                 throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
@@ -70,7 +70,7 @@ namespace Griffin.Container
         public void SetConstructor(ConstructorInfo constructor)
         {
             Constructor = constructor;
-            _parameters = new BuildPlan[Constructor.GetParameters().Length];
+            _parameters = new IBuildPlan[Constructor.GetParameters().Length];
             _factoryMethod = constructor.GetActivator();
         }
 
@@ -80,7 +80,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="index">Index of the constructor parameter</param>
         /// <param name="bp">Plan used to construct the parameter</param>
-        public void AddConstructorPlan(int index, BuildPlan bp)
+        public void AddConstructorPlan(int index, IBuildPlan bp)
         {
             _parameters[index] = bp;
         }
@@ -124,10 +124,10 @@ namespace Griffin.Container
 
         private class InstanceStrategyContext : IInstanceStrategyContext
         {
-            private readonly BuildPlan _bp;
+            private readonly ConcreteBuildPlan _bp;
             private readonly Func<object> _factory;
 
-            public InstanceStrategyContext(BuildPlan bp, Func<object> factory)
+            public InstanceStrategyContext(ConcreteBuildPlan bp, Func<object> factory)
             {
                 _bp = bp;
                 _factory = factory;
@@ -135,7 +135,7 @@ namespace Griffin.Container
 
             #region IInstanceStrategyContext Members
 
-            public BuildPlan BuildPlan
+            public ConcreteBuildPlan BuildPlan
             {
                 get { return _bp; }
             }

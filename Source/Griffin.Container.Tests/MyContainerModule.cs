@@ -4,7 +4,7 @@ namespace Griffin.Container.Tests
     {
         public void Register(IContainerRegistrar registrar)
         {
-            registrar.RegisterType<MySelf>(Lifetime.Transient);
+            registrar.RegisterConcrete<MySelf>(Lifetime.Transient);
         }
     }
 }

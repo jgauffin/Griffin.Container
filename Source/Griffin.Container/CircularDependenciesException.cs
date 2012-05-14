@@ -9,14 +9,14 @@ namespace Griffin.Container
     /// </summary>
     public class CircularDependenciesException : Exception
     {
-        private readonly IEnumerable<BuildPlan> _plans;
+        private readonly IEnumerable<ConcreteBuildPlan> _plans;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircularDependenciesException"/> class.
         /// </summary>
         /// <param name="errMsg">The err MSG.</param>
         /// <param name="plans">The plans.</param>
-        public CircularDependenciesException(string errMsg, IEnumerable<BuildPlan> plans)
+        public CircularDependenciesException(string errMsg, IEnumerable<ConcreteBuildPlan> plans)
             : base(errMsg)
         {
             if (plans == null) throw new ArgumentNullException("plans");

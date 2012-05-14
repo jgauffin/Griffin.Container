@@ -8,7 +8,7 @@ namespace Griffin.Container
     /// </summary>
     public class CreateContext
     {
-        private readonly LinkedList<BuildPlan> _plansVisited = new LinkedList<BuildPlan>();
+        private readonly LinkedList<ConcreteBuildPlan> _plansVisited = new LinkedList<ConcreteBuildPlan>();
 
         /// <summary>
         /// Gets or sets container
@@ -29,7 +29,7 @@ namespace Griffin.Container
         /// Add a build plan
         /// </summary>
         /// <param name="plan">build plan</param>
-        public void Add(BuildPlan plan)
+        public void Add(ConcreteBuildPlan plan)
         {
             if (plan == null) throw new ArgumentNullException("plan");
             if (_plansVisited.Contains(plan))

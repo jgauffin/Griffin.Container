@@ -8,14 +8,14 @@ using Xunit;
 namespace Griffin.Container.Tests
 {
 
-    
+
     public class IntegrationTests
     {
         [Fact]
         public void SimpleRegistrationTransient()
         {
             var registrar = new ContainerRegistrar();
-            registrar.RegisterType<MySelf>(Lifetime.Transient);
+            registrar.RegisterConcrete<MySelf>(Lifetime.Transient);
             var builder = new ContainerBuilder();
             var container = builder.Build(registrar);
 
@@ -30,8 +30,8 @@ namespace Griffin.Container.Tests
         public void OneDependencySingleton()
         {
             var registrar = new ContainerRegistrar();
-            registrar.RegisterType<MySelf>(Lifetime.Transient);
-            registrar.RegisterType<OneDepencency>(Lifetime.Singleton);
+            registrar.RegisterConcrete<MySelf>(Lifetime.Transient);
+            registrar.RegisterConcrete<OneDepencency>(Lifetime.Singleton);
             var builder = new ContainerBuilder();
             var container = builder.Build(registrar);
 
@@ -45,8 +45,8 @@ namespace Griffin.Container.Tests
         public void ResolveAllStartable()
         {
             var registrar = new ContainerRegistrar();
-            registrar.RegisterType<Startable1>(Lifetime.Singleton);
-            registrar.RegisterType<Startable2>(Lifetime.Singleton);
+            registrar.RegisterConcrete<Startable1>(Lifetime.Singleton);
+            registrar.RegisterConcrete<Startable2>(Lifetime.Singleton);
             var builder = new ContainerBuilder();
             var container = builder.Build(registrar);
 
@@ -81,7 +81,7 @@ namespace Griffin.Container.Tests
         public void ChildContainer()
         {
             var registrar = new ContainerRegistrar();
-            registrar.RegisterType<MySelf>();
+            registrar.RegisterConcrete<MySelf>();
             var builder = new ContainerBuilder();
             var container = builder.Build(registrar);
 
@@ -92,6 +92,28 @@ namespace Griffin.Container.Tests
             }
 
             Assert.True(instance.IsDisposed);
+        }
+
+        [Fact]
+        public void TestDelegateFactory()
+        {
+            var registrar = new ContainerRegistrar();
+            registrar.RegisterService<MySelf>(ctnr => new MySelf(), Lifetime.Transient);
+            registrar.RegisterConcrete<OneDepencency>(Lifetime.Singleton);
+            var container = registrar.Build();
+
+            container.Resolve<OneDepencency>();
+        }
+
+        [Fact]
+        public void TestSingleton()
+        {
+            var registrar = new ContainerRegistrar();
+            registrar.RegisterInstance<MySelf>(new MySelf());
+            registrar.RegisterConcrete<OneDepencency>(Lifetime.Singleton);
+            var container = registrar.Build();
+
+            container.Resolve<OneDepencency>();
         }
     }
 }

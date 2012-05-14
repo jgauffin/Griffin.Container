@@ -19,7 +19,7 @@ namespace Griffin.Container
         /// <param name="parentStorage">The parent storage.</param>
         /// <param name="childStorage">The child storage.</param>
         /// <param name="disposedCallback">Invoked when the container is disposed.</param>
-        public ChildContainer(IDictionary<Type, List<BuildPlan>> serviceMappings, IInstanceStorage parentStorage,
+        public ChildContainer(IDictionary<Type, List<IBuildPlan>> serviceMappings, IInstanceStorage parentStorage,
                               IInstanceStorage childStorage, Action disposedCallback) : base(serviceMappings)
         {
             _parentStorage = parentStorage;
@@ -47,7 +47,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="bp">Build plan</param>
         /// <returns>Created instance (throw exception if it can't be built).</returns>
-        protected override object GetInstance(BuildPlan bp)
+        protected override object GetInstance(IBuildPlan bp)
         {
             var context = new CreateContext {Container = this, Scoped = _childStorage, Singletons = _parentStorage};
             return bp.GetInstance(context);

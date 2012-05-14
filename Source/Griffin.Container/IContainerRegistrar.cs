@@ -49,7 +49,7 @@ namespace Griffin.Container
         /// <typeparam name="TConcrete">Type to create</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         /// <remarks>Will be registered as all interfaces &amp; subclasses which is not rejected by the current <see cref="IServiceFilter"/>.</remarks>
-        void RegisterType<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class;
+        void RegisterConcrete<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class;
 
         /// <summary>
         /// Register a type
@@ -57,7 +57,7 @@ namespace Griffin.Container
         /// <typeparam name="TService">Services which is requested from the container.</typeparam>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the returned object</param>
-        void RegisterType<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterService<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
 
         /// <summary>
         /// Register a type
@@ -70,20 +70,20 @@ namespace Griffin.Container
             where TConcrete : class;
 
         /// <summary>
-        /// Register a type
+        /// Register a cpncrete
         /// </summary>
         /// <param name="concrete">Type which will be created</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         /// <remarks>Will be registered as all interfaces &amp; subclasses which is not rejected by the current <see cref="IServiceFilter"/>.</remarks>
-        void RegisterType(Type concrete, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterConcrete(Type concrete, Lifetime lifetime = Lifetime.Scoped);
 
         /// <summary>
-        /// Register a type
+        /// Register a service.
         /// </summary>
         /// <param name="service">Services which is requested from the container.</param>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        void RegisterType(Type service, Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterService(Type service, Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
 
         /// <summary>
         /// Register a type
