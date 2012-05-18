@@ -111,7 +111,7 @@ namespace Griffin.Container
         {
             context.Add(this);
 
-            var parameters = new object[Constructor.GetParameters().Length];
+            var parameters = new object[_parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
             {
                 parameters[i] = _parameters[i].GetInstance(context);

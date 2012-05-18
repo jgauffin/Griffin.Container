@@ -29,8 +29,11 @@ namespace Griffin.Container
         /// Add a build plan
         /// </summary>
         /// <param name="plan">build plan</param>
+        [Obsolete("Validate circular dependencies in the ContainerBuilder instead.")]
         public void Add(ConcreteBuildPlan plan)
         {
+            return;
+
             if (plan == null) throw new ArgumentNullException("plan");
             if (_plansVisited.Contains(plan))
                 throw new CircularDependenciesException("Circular dependencies.", _plansVisited);
