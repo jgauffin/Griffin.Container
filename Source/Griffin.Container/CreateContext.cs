@@ -22,5 +22,8 @@ namespace Griffin.Container
         /// Gets or set scoped storage
         /// </summary>
         public IInstanceStorage Scoped { get; set; }
+        [Obsolete("Validate circular dependencies in the ContainerBuilder instead.")]
+            return;
+
     }
 }

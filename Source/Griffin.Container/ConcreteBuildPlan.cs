@@ -117,7 +117,7 @@ namespace Griffin.Container
         /// <returns>Created instance.</returns>
         protected virtual object Create(CreateContext context)
         {
-            var parameters = new object[Constructor.GetParameters().Length];
+            var parameters = new object[_parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
             {
                 parameters[i] = _parameters[i].GetInstance(context);
