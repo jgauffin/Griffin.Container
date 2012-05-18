@@ -8,13 +8,13 @@ namespace Griffin.Container
     /// </summary>
     public abstract class ContainerBase
     {
-        private readonly IDictionary<Type, List<IBuildPlan>> _serviceMappings;
+        private readonly IServiceMappings _serviceMappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBase"/> class.
         /// </summary>
         /// <param name="serviceMappings">The service mappings.</param>
-        protected ContainerBase(IDictionary<Type, List<IBuildPlan>> serviceMappings)
+        protected ContainerBase(IServiceMappings serviceMappings)
         {
             if (serviceMappings == null) throw new ArgumentNullException("serviceMappings");
             _serviceMappings = serviceMappings;
@@ -23,7 +23,7 @@ namespace Griffin.Container
         /// <summary>
         /// Get all service mappings
         /// </summary>
-        protected IDictionary<Type, List<IBuildPlan>> ServiceMappings
+        protected IServiceMappings ServiceMappings
         {
             get { return _serviceMappings; }
         }
@@ -36,7 +36,7 @@ namespace Griffin.Container
         public bool IsRegistered(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            return ServiceMappings.ContainsKey(type);
+            return ServiceMappings.Contains(type);
         }
 
         /// <summary>
@@ -71,16 +71,17 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="service">The service.</param>
         /// <returns>Build plans</returns>
-        protected virtual List<IBuildPlan> GetBuildPlans(Type service)
+        protected virtual IList<IBuildPlan> GetBuildPlans(Type service)
         {
             if (service == null) throw new ArgumentNullException("service");
-            List<IBuildPlan> bps;
+            IList<IBuildPlan> bps;
             if (!ServiceMappings.TryGetValue(service, out bps))
                 throw new InvalidOperationException(string.Format("Service {0} has not been registered.",
                                                                   service.FullName));
 
             return bps;
         }
+
 
         /// <summary>
         /// Get instance for the specified buil plan
@@ -96,7 +97,9 @@ namespace Griffin.Container
         /// <returns>objects which implements the service (or an empty list).</returns>
         public IEnumerable<T> ResolveAll<T>() where T : class
         {
-            var bps = GetBuildPlans(typeof (T));
+            IList<IBuildPlan> bps;
+            if (!ServiceMappings.TryGetValue(typeof(T), out bps))
+                return new T[0];
 
             var services = new T[bps.Count];
             for (var i = 0; i < services.Length; i++)
@@ -114,7 +117,9 @@ namespace Griffin.Container
         /// <returns>objects which implements the service (or an empty list).</returns>
         public IEnumerable<object> ResolveAll(Type service)
         {
-            var bps = GetBuildPlans(service);
+            IList<IBuildPlan> bps;
+            if (!ServiceMappings.TryGetValue(service, out bps))
+                return new object[0];
 
             var services = new object[bps.Count];
             for (var i = 0; i < services.Length; i++)

@@ -12,7 +12,7 @@ namespace Griffin.Container
     public class ContainerBuilder : IContainerBuilder
     {
         private readonly Dictionary<Type, ConcreteBuildPlan> _buildPlans = new Dictionary<Type, ConcreteBuildPlan>();
-        private readonly Dictionary<Type, List<IBuildPlan>> _serviceMappings = new Dictionary<Type, List<IBuildPlan>>();
+        private readonly IServiceMappings _serviceMappings = new ServiceMappings();
         private IContainerRegistrar _registrar;
 
         #region IContainerBuilder Members
@@ -46,12 +46,20 @@ namespace Griffin.Container
 
                 foreach (var service in registration.Services)
                 {
-                    List<IBuildPlan> buildPlans;
+                    IList<IBuildPlan> buildPlans;
                     if (!_serviceMappings.TryGetValue(service, out buildPlans))
                     {
                         buildPlans = new List<IBuildPlan>();
                         _serviceMappings.Add(service, buildPlans);
                     }
+
+                    /*
+                    if (buildPlans.Any() && registration.Lifetime != buildPlans.First().Lifetime)
+                        throw new InvalidOperationException(
+                            string.Format(
+                                "Concretes which implements the same service may not have different lifetimes. Which {0} and {1} has.",
+                                registration.ConcreteType.FullName, buildPlans.First().DisplayName));
+                    */
 
                     buildPlans.Add(_buildPlans[registration.ConcreteType]);
                 }
@@ -74,7 +82,7 @@ namespace Griffin.Container
             var parameters = buildPlan.Constructor.GetParameters();
             for (var i = 0; i < parameters.Length; i++)
             {
-                List<IBuildPlan> bp;
+                IList<IBuildPlan> bp;
                 if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out bp))
                     throw new InvalidOperationException(string.Format("Failed to find service {0}.",
                                                                       parameters[i].ParameterType));
@@ -127,7 +135,7 @@ namespace Griffin.Container
                 {
                     foreach (var service in registration.Services)
                     {
-                        List<IBuildPlan> buildPlans;
+                        IList<IBuildPlan> buildPlans;
                         if (!_serviceMappings.TryGetValue(service, out buildPlans))
                         {
                             buildPlans = new List<IBuildPlan>();
@@ -170,7 +178,5 @@ namespace Griffin.Container
             constructor = null;
             return error;
         }
-
-        //public class FindConstructor
     }
 }

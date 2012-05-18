@@ -48,6 +48,14 @@ namespace Griffin.Container
         /// </summary>
         public Lifetime Lifetime { get; private set; }
 
+        /// <summary>
+        /// Either name of the concrete or anything else which can help the user to identify the registration.
+        /// </summary>
+        public string DisplayName
+        {
+            get { return _concreteType.FullName; }
+        }
+
 
         /// <summary>
         /// Gets the constructor which was chosen
@@ -109,8 +117,6 @@ namespace Griffin.Container
         /// <returns>Created instance.</returns>
         protected virtual object Create(CreateContext context)
         {
-            context.Add(this);
-
             var parameters = new object[Constructor.GetParameters().Length];
             for (var i = 0; i < parameters.Length; i++)
             {

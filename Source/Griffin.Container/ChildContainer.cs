@@ -19,7 +19,7 @@ namespace Griffin.Container
         /// <param name="parentStorage">The parent storage.</param>
         /// <param name="childStorage">The child storage.</param>
         /// <param name="disposedCallback">Invoked when the container is disposed.</param>
-        public ChildContainer(IDictionary<Type, List<IBuildPlan>> serviceMappings, IInstanceStorage parentStorage,
+        public ChildContainer(IServiceMappings serviceMappings, IInstanceStorage parentStorage,
                               IInstanceStorage childStorage, Action disposedCallback) : base(serviceMappings)
         {
             _parentStorage = parentStorage;

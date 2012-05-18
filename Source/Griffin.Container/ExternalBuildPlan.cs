@@ -41,6 +41,22 @@ namespace Griffin.Container
             return _instanceStrategy.GetInstance(strategyContext);
         }
 
+        /// <summary>
+        /// Gets lifetime of the object.
+        /// </summary>
+        public Lifetime Lifetime
+        {
+            get { return _lifetime; }
+        }
+
+        /// <summary>
+        /// Either name of the concrete or anything else which can help the user to identify the registration.
+        /// </summary>
+        public string DisplayName
+        {
+            get { return _instanceStrategy.GetType().FullName; }
+        }
+
         class ExternalInstanceStrategyContext : IInstanceStrategyContext
         {
             public IBuildPlan BuildPlan { get;  set; }

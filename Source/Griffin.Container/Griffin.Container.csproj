@@ -68,7 +68,9 @@
     <Compile Include="InstanceFactory2.cs" />
     <Compile Include="IParentContainer.cs" />
     <Compile Include="IScopedStartable.cs" />
+    <Compile Include="IServiceMappings.cs" />
     <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="ServiceMappings.cs" />
     <Compile Include="TypeResolutionFailed.cs" />
     <Compile Include="ComponentRegistration.cs" />
     <Compile Include="ConstructorFailedReason.cs" />

@@ -18,9 +18,15 @@ namespace Griffin.Container.InstanceStrategies
             if (existing != null)
                 return existing;
 
-            existing = context.CreateInstance();
+            lock(context.SingletonStorage)
+            {
+                existing = context.SingletonStorage.Retreive(context.BuildPlan);
+                if (existing != null)
+                    return existing;
 
-            context.SingletonStorage.Store(context.BuildPlan, existing);
+                existing = context.CreateInstance();
+                context.SingletonStorage.Store(context.BuildPlan, existing);
+            }
 
             return existing;
         }

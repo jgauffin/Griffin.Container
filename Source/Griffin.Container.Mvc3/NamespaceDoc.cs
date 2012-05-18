@@ -10,10 +10,10 @@ namespace Griffin.Container.Mvc3
     /// </remarks>
     /// <example>
     /// <code>
-    /// // somewhere during the registraitons
+    /// // Register all controllers in the current assembly
     /// registrar.RegisterControllers(Assembly.GetExecutingAssembly());
     /// 
-    /// // when the container have bene built.
+    /// // You also need to tell ASP.NET MVC3 to use Griffin.Container like this:
     /// DependencyResolver.SetResolver(new GriffinDependencyResolver(container));
     /// </code>
     /// </example>
