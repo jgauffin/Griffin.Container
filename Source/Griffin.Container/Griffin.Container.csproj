@@ -43,18 +43,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyUtils.cs" />
-    <Compile Include="ConcreteBuildPlan.cs" />
+    <Compile Include="BuildPlans\ConcreteBuildPlan.cs" />
+    <Compile Include="BuildPlans\GenericBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
     <Compile Include="CircularDependenciesException.cs" />
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
-    <Compile Include="ExternalBuildPlan.cs" />
+    <Compile Include="DecoratorContext.cs" />
+    <Compile Include="DependencyNotRegisteredException.cs" />
+    <Compile Include="BuildPlans\ExternalBuildPlan.cs" />
     <Compile Include="CreateContext.cs" />
     <Compile Include="DefaultInstanceStorageFactory.cs" />
     <Compile Include="DomainEvents\DomainEvent.cs" />
     <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
     <Compile Include="DomainEvents\NamespaceDoc.cs" />
-    <Compile Include="IBuildPlan.cs" />
+    <Compile Include="BuildPlans\IBuildPlan.cs" />
+    <Compile Include="IInstanceDecorator.cs" />
     <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
     <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />
@@ -71,7 +75,7 @@
     <Compile Include="IServiceMappings.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="ServiceMappings.cs" />
-    <Compile Include="TypeResolutionFailed.cs" />
+    <Compile Include="FailureReasons.cs" />
     <Compile Include="ComponentRegistration.cs" />
     <Compile Include="ConstructorFailedReason.cs" />
     <Compile Include="Container.cs" />
@@ -87,6 +91,7 @@
     <Compile Include="Lifetime.cs" />
     <Compile Include="NonFrameworkClasses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="TypeResolutionFailedException.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Griffin.Container.BuildPlans;
 
 namespace Griffin.Container
 {
     /// <summary>
     /// Base class for the container.
     /// </summary>
-    public abstract class ContainerBase
+    public abstract class ContainerBase : IServiceLocator
     {
         private readonly IServiceMappings _serviceMappings;
 
@@ -59,7 +60,7 @@ namespace Griffin.Container
             if (service == null) throw new ArgumentNullException("service");
             var bps = GetBuildPlans(service);
 
-            var instance = GetInstance(bps[0]);
+            var instance = GetInstance(bps[0], service);
             if (instance == null)
                 throw new InvalidOperationException(string.Format("Failed to construct {0}", service.FullName));
 
@@ -76,19 +77,45 @@ namespace Griffin.Container
             if (service == null) throw new ArgumentNullException("service");
             IList<IBuildPlan> bps;
             if (!ServiceMappings.TryGetValue(service, out bps))
-                throw new InvalidOperationException(string.Format("Service {0} has not been registered.",
-                                                                  service.FullName));
+            {
+                if (service.IsGenericType)
+                {
+                    var genericService = service.GetGenericTypeDefinition();
+                    if (!ServiceMappings.TryGetValue(genericService, out bps))
+                    {
+                        throw new InvalidOperationException(string.Format("Service {0} has not been registered.",
+                                                                          service.FullName));
+                    }
+                }
+
+            }
+                
 
             return bps;
         }
 
 
         /// <summary>
+        /// Gets storage for scoped objects.
+        /// </summary>
+        protected abstract IInstanceStorage ChildStorage { get; }
+
+        /// <summary>
+        /// Gets storage for singletons
+        /// </summary>
+        protected abstract IInstanceStorage RootStorage { get; }
+
+        /// <summary>
         /// Get instance for the specified buil plan
         /// </summary>
-        /// <param name="bp">Build plan</param>
+        /// <param name="bp">Build plan describing how to create and store the object</param>
+        /// <param name="requestedService">Service to build.</param>
         /// <returns>Created instance (throw exception if it can't be built).</returns>
-        protected abstract object GetInstance(IBuildPlan bp);
+        protected virtual object GetInstance(IBuildPlan bp, Type requestedService)
+        {
+            var context = new CreateContext(this, RootStorage, ChildStorage, requestedService);
+            return bp.GetInstance(context);
+        }
 
         /// <summary>
         /// Resolve all found implementations.
@@ -104,7 +131,7 @@ namespace Griffin.Container
             var services = new T[bps.Count];
             for (var i = 0; i < services.Length; i++)
             {
-                services[i] = (T) GetInstance(bps[i]);
+                services[i] = (T) GetInstance(bps[i], typeof(T));
             }
 
             return services;
@@ -124,7 +151,7 @@ namespace Griffin.Container
             var services = new object[bps.Count];
             for (var i = 0; i < services.Length; i++)
             {
-                services[i] = GetInstance(bps[i]);
+                services[i] = GetInstance(bps[i], service);
             }
 
             return services;

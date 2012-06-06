@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Griffin.Container.BuildPlans;
 
 namespace Griffin.Container
 {
@@ -43,14 +44,19 @@ namespace Griffin.Container
         #endregion
 
         /// <summary>
-        /// Get instance for the specified buil plan
+        /// Gets storage for scoped objects.
         /// </summary>
-        /// <param name="bp">Build plan</param>
-        /// <returns>Created instance (throw exception if it can't be built).</returns>
-        protected override object GetInstance(IBuildPlan bp)
+        protected override IInstanceStorage ChildStorage
         {
-            var context = new CreateContext {Container = this, Scoped = _childStorage, Singletons = _parentStorage};
-            return bp.GetInstance(context);
+            get { return _childStorage; }
+        }
+
+        /// <summary>
+        /// Gets storage for singletons
+        /// </summary>
+        protected override IInstanceStorage RootStorage
+        {
+            get { return _parentStorage; }
         }
     }
 }

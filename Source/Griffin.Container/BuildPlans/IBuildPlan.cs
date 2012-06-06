@@ -1,4 +1,4 @@
-namespace Griffin.Container
+namespace Griffin.Container.BuildPlans
 {
     /// <summary>
     /// Build plan

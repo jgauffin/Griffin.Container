@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Griffin.Container.InstanceStrategies;
 
-namespace Griffin.Container
+namespace Griffin.Container.BuildPlans
 {
     /// <summary>
     /// A plan telling how concrete classes should be built.
@@ -53,7 +53,7 @@ namespace Griffin.Container
         /// </summary>
         public string DisplayName
         {
-            get { return _concreteType.FullName; }
+            get { return ConcreteType.FullName; }
         }
 
 
@@ -75,11 +75,20 @@ namespace Griffin.Container
         /// Sets the constructor to use
         /// </summary>
         /// <param name="constructor"></param>
-        public void SetConstructor(ConstructorInfo constructor)
+        public virtual void SetConstructor(ConstructorInfo constructor)
         {
             Constructor = constructor;
             _parameters = new IBuildPlan[Constructor.GetParameters().Length];
-            _factoryMethod = constructor.GetActivator();
+            _factoryMethod = GetCreateDelegate();
+        }
+
+        /// <summary>
+        /// Used to create the delegate used to create the instance.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ObjectActivator GetCreateDelegate()
+        {
+            return Constructor.GetActivator();
         }
 
 
@@ -111,7 +120,7 @@ namespace Griffin.Container
 
 
         /// <summary>
-        /// Construct a new object
+        /// Assembles all argument services and creates instance
         /// </summary>
         /// <param name="context">Context used to create instances.</param>
         /// <returns>Created instance.</returns>
@@ -123,7 +132,17 @@ namespace Griffin.Container
                 parameters[i] = _parameters[i].GetInstance(context);
             }
 
-            return _factoryMethod(parameters);
+            return Create(context, parameters);
+        }
+
+        /// <summary>
+        /// Creates the actual instance
+        /// </summary>
+        /// <param name="arguments">Constructor arguments</param>
+        /// <returns>Created instance.</returns>
+        protected virtual object Create(CreateContext context, object[] arguments)
+        {
+            return _factoryMethod(arguments);
         }
 
         #region Nested type: InstanceStrategyContext

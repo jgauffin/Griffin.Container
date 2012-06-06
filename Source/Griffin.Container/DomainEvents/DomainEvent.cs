@@ -8,6 +8,7 @@ namespace Griffin.Container.DomainEvents
     /// <summary>
     /// Publishes domain events through the inversion of control container
     /// </summary>
+    /// <remarks>You can use your own implementation (which doesn't have to go through the container) by invoking <c>DomainEvent.Assign()</c>.</remarks>
     public class DomainEvent
     {
         static DomainEvent _instance = new DomainEvent();

@@ -1,3 +1,5 @@
+using Griffin.Container.BuildPlans;
+
 namespace Griffin.Container.InstanceStrategies
 {
     /// <summary>

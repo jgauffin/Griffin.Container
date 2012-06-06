@@ -7,25 +7,35 @@ namespace Griffin.Container
     /// </summary>
     public class TypeResolutionFailedException : Exception
     {
-        private readonly TypeResolutionFailed _error;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeResolutionFailedException"/> class.
         /// </summary>
+        /// <param name="concreteType">Type of the concrete which could not be built.</param>
         /// <param name="error">The error.</param>
-        public TypeResolutionFailedException(TypeResolutionFailed error)
-            : base("Failed to resolve " + error.Type)
+        public TypeResolutionFailedException(Type concreteType, FailureReasons error)
+            : base(string.Format("Failed to lookup '{0}'.", concreteType.FullName))
         {
-            _error = error;
+            ConcreteBeingBuilt = concreteType;
+            Reasons = error;
         }
 
         /// <summary>
-        /// Gets reason for the error
+        /// Gets class being built
         /// </summary>
-        public TypeResolutionFailed Error
-        {
-            get { return _error; }
-        }
+        public Type ConcreteBeingBuilt { get; set; }
 
+        /// <summary>
+        /// Gets why we could not build the class.
+        /// </summary>
+        public FailureReasons Reasons { get; private set; }
+
+        /// <summary>
+        /// Gets a message that describes the current exception.
+        /// </summary>
+        /// <returns>The error message that explains the reason for the exception, or an empty string("").</returns>
+        public override string Message
+        {
+            get { return base.Message + "\r\n" + Reasons; }
+        }
     }
 }

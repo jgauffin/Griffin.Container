@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Griffin.Container.BuildPlans;
 using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container
@@ -31,7 +32,7 @@ namespace Griffin.Container
             GenerateBuildPlans(registrar);
             MapConcretesToServices();
             BindPlans();
-
+            Validate();
             return new Container(_serviceMappings);
         }
 
@@ -64,6 +65,44 @@ namespace Griffin.Container
                     buildPlans.Add(_buildPlans[registration.ConcreteType]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Validate that all services can be built.
+        /// </summary>
+        protected virtual void Validate()
+        {
+            foreach (var mapping in _serviceMappings)
+            {
+                var breadcrumbs = new LinkedList<Type>();
+                ValidateMapping(mapping.Key, breadcrumbs);
+            }
+        }
+
+        private void ValidateMapping(Type service, LinkedList<Type> breadcrumbs)
+        {
+            if (breadcrumbs.Contains(service))
+                throw new CircularDependenciesException(
+                    "Found a circular dependency when looking up " + breadcrumbs.First() +
+                    ", when inspecting the constructor of " + breadcrumbs.Last() + ", violating service: " + service,
+                    breadcrumbs);
+
+
+
+            IList<IBuildPlan> buildPlans;
+            if (!_serviceMappings.TryGetValue(service, out buildPlans))
+                throw new DependencyNotRegisteredException(breadcrumbs.Last.Value, service);
+
+            var cbp = buildPlans.Last() as ConcreteBuildPlan;
+            if(cbp == null)
+                return;
+
+            breadcrumbs.AddLast(service);
+            foreach (var parameter in cbp.Constructor.GetParameters())
+            {
+                ValidateMapping(parameter.ParameterType, breadcrumbs);
+            }
+            breadcrumbs.RemoveLast();
         }
 
         /// <summary>
@@ -122,11 +161,14 @@ namespace Griffin.Container
 
                 if (!strategy.IsInstanceFactory)
                 {
-                var buildPlan = new ConcreteBuildPlan(registration.ConcreteType, registration.Lifetime, strategy);
+                    var buildPlan = registration.ConcreteType.IsGenericType
+                        ? new GenericBuildPlan(registration.ConcreteType, registration.Lifetime, strategy)
+                        : new ConcreteBuildPlan(registration.ConcreteType, registration.Lifetime, strategy);
+
                     ConstructorInfo constructor;
                     var error = TryGetConstructor(registration.ConcreteType, out constructor);
                     if (error != null)
-                        throw new TypeResolutionFailedException(error);
+                        throw new TypeResolutionFailedException(registration.ConcreteType, error);
 
                     buildPlan.SetConstructor(constructor);
                     _buildPlans.Add(registration.ConcreteType, buildPlan);
@@ -145,7 +187,7 @@ namespace Griffin.Container
                         var bp = new ExternalBuildPlan(registration.Lifetime, strategy);
                         buildPlans.Add(bp);
                     }
-                    
+
                 }
             }
         }
@@ -156,23 +198,23 @@ namespace Griffin.Container
         /// <param name="concreteType">Type to create</param>
         /// <param name="constructor">Chosen constructor</param>
         /// <returns>Error if any; otherwise null.</returns>
-        protected virtual TypeResolutionFailed TryGetConstructor(Type concreteType, out ConstructorInfo constructor)
+        protected virtual FailureReasons TryGetConstructor(Type concreteType, out ConstructorInfo constructor)
         {
-            var error = new TypeResolutionFailed(concreteType);
-            foreach (var constructorInfo in concreteType.GetConstructors().OrderBy(x => x.GetParameters().Length))
+            var error = new FailureReasons(concreteType);
+            foreach (var constructorInfo in concreteType.GetConstructors().OrderByDescending(x => x.GetParameters().Length))
             {
-                var found =
-                    constructorInfo.GetParameters().All(
-                        parameter => _registrar.Registrations.Any(x => x.Implements(parameter.ParameterType)));
+                var missing =
+                    constructorInfo.GetParameters().FirstOrDefault(
+                        parameter => !_registrar.Registrations.Any(x => x.Implements(parameter.ParameterType)));
 
-                if (found)
+                if (missing == null)
                 {
                     constructor = constructorInfo;
                     return null;
                 }
 
 
-                error.Add(new ConstructorFailedReason(constructorInfo, "Failed to resolve "));
+                error.Add(new ConstructorFailedReason(constructorInfo, missing.ParameterType));
             }
 
             constructor = null;

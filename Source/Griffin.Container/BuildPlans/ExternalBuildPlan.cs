@@ -1,7 +1,7 @@
 using System;
 using Griffin.Container.InstanceStrategies;
 
-namespace Griffin.Container
+namespace Griffin.Container.BuildPlans
 {
     /// <summary>
     /// Maps a service to a build plan which is generated outside.

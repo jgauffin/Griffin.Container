@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Griffin.Container.BuildPlans;
 
 namespace Griffin.Container
 {
     /// <summary>
     /// Maps services to build plans
     /// </summary>
-    public interface IServiceMappings
+    public interface IServiceMappings : IEnumerable<KeyValuePair<Type, IEnumerable<IBuildPlan>>>
     {
         /// <summary>
         /// Checks if the specified service exists.

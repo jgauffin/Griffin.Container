@@ -14,7 +14,6 @@ namespace Griffin.Container.DomainEvents
         /// <summary>
         /// Handle the domain event
         /// </summary>
-        /// <typeparam name="T">Type of event</typeparam>
         /// <param name="e">The event</param>
         void Handle(T e);
     }

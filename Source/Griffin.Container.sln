@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Mvc3", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Wcf", "Griffin.Container.Wcf\Griffin.Container.Wcf.csproj", "{27140D81-DA6B-48F5-9407-A08832560A9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Interception", "Griffin.Container.Interception\Griffin.Container.Interception.csproj", "{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

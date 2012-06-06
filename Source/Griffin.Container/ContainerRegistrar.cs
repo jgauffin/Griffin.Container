@@ -165,8 +165,9 @@ namespace Griffin.Container
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TService : class
-            where TConcrete : class
+        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Scoped) 
+            where TService : class
+            where TConcrete : TService
         {
             RegisterType(typeof (TService), typeof (TConcrete), lifetime);
         }
@@ -207,7 +208,7 @@ namespace Griffin.Container
         /// <param name="lifetime">Lifetime of the object that implements the service</param>
         public void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Scoped)
         {
-            if (!service.IsAssignableFrom(concrete))
+            if (!service.IsAssignableFromGeneric(concrete) && !service.IsAssignableFrom(concrete))
                 throw new InvalidOperationException(string.Format("Type {0} is not assignable from {1}.",
                                                                   service.FullName, concrete.FullName));
 

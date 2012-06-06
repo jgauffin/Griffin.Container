@@ -9,18 +9,18 @@ namespace Griffin.Container
     /// </summary>
     public class CircularDependenciesException : Exception
     {
-        private readonly IEnumerable<ConcreteBuildPlan> _plans;
+        private readonly IEnumerable<Type> _plans;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircularDependenciesException"/> class.
         /// </summary>
         /// <param name="errMsg">The err MSG.</param>
-        /// <param name="plans">The plans.</param>
-        public CircularDependenciesException(string errMsg, IEnumerable<ConcreteBuildPlan> plans)
+        /// <param name="path">Path to discovery.</param>
+        public CircularDependenciesException(string errMsg, IEnumerable<Type> path)
             : base(errMsg)
         {
-            if (plans == null) throw new ArgumentNullException("plans");
-            _plans = plans;
+            if (path == null) throw new ArgumentNullException("path");
+            _plans = path;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Griffin.Container
         {
             get
             {
-                var plans = _plans.Aggregate("", (current, plan) => current + (plan.ConcreteType.FullName + "  => "));
+                var plans = _plans.Aggregate("", (current, plan) => current + (plan.FullName + "  => "));
                 plans = plans.Remove(plans.Length - 4, 4);
                 return base.Message + " Path: " + plans;
             }

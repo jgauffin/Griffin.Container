@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 namespace Griffin.Container
@@ -7,17 +8,17 @@ namespace Griffin.Container
     /// </summary>
     public class ConstructorFailedReason
     {
-        private readonly string _reason;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstructorFailedReason"/> class.
         /// </summary>
         /// <param name="constructor">The constructor.</param>
-        /// <param name="reason">Reason why the constructor cant be used.</param>
-        public ConstructorFailedReason(ConstructorInfo constructor, string reason)
+        /// <param name="missingService">Service which could not be located.</param>
+        public ConstructorFailedReason(ConstructorInfo constructor, Type missingService)
         {
-            _reason = reason;
+            if (constructor == null) throw new ArgumentNullException("constructor");
+            if (missingService == null) throw new ArgumentNullException("missingService");
             Constructor = constructor;
+            MissingService = missingService;
         }
 
         /// <summary>
@@ -26,11 +27,14 @@ namespace Griffin.Container
         public ConstructorInfo Constructor { get; set; }
 
         /// <summary>
-        /// Gets why constructor cant be used
+        /// Get service which could not be found
         /// </summary>
-        public string Reason
+        public Type MissingService { get; set; }
+
+        public override string ToString()
         {
-            get { return _reason; }
+            return string.Format("Failed to build type '{0}', could not find service '{1}'.", Constructor.ReflectedType,
+                                 MissingService);
         }
     }
 }

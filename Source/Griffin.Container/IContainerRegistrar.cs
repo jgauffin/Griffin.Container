@@ -65,9 +65,9 @@ namespace Griffin.Container
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        void RegisterType<TConcrete, TService>(Lifetime lifetime = Lifetime.Scoped)
+        void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Scoped)
             where TService : class
-            where TConcrete : class;
+            where TConcrete : TService;
 
         /// <summary>
         /// Register a cpncrete
@@ -91,7 +91,7 @@ namespace Griffin.Container
         /// <param name="concrete">Class which will be constructed and returned.</param>
         /// <param name="service">Type which will be requested</param>
         /// <param name="lifetime">Lifetime of the object that implements the service</param>
-        void RegisterType(Type concrete, Type service, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Scoped);
 
         /// <summary>
         /// Register an singleton
