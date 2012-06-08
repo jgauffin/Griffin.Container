@@ -7,9 +7,10 @@ namespace Griffin.Container
     /// <summary>
     /// Base class for the container.
     /// </summary>
-    public abstract class ContainerBase : IServiceLocator
+    public abstract class ContainerBase : IServiceLocator, ICreateCallback
     {
         private readonly IServiceMappings _serviceMappings;
+        private List<IInstanceDecorator> _decorators = new List<IInstanceDecorator>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBase"/> class.
@@ -19,6 +20,13 @@ namespace Griffin.Container
         {
             if (serviceMappings == null) throw new ArgumentNullException("serviceMappings");
             _serviceMappings = serviceMappings;
+            foreach (var mapping in serviceMappings)
+            {
+                foreach (var concrete in mapping.Value)
+                {
+                    concrete.SetCreateCallback(this);
+                }
+            }
         }
 
         /// <summary>
@@ -59,7 +67,8 @@ namespace Griffin.Container
         {
             if (service == null) throw new ArgumentNullException("service");
             var bps = GetBuildPlans(service);
-
+            if (bps == null)
+                throw new ServiceNotRegisteredException(service);
             var instance = GetInstance(bps[0], service);
             if (instance == null)
                 throw new InvalidOperationException(string.Format("Failed to construct {0}", service.FullName));
@@ -113,8 +122,11 @@ namespace Griffin.Container
         /// <returns>Created instance (throw exception if it can't be built).</returns>
         protected virtual object GetInstance(IBuildPlan bp, Type requestedService)
         {
+            if (requestedService == null) throw new ArgumentNullException("requestedService");
             var context = new CreateContext(this, RootStorage, ChildStorage, requestedService);
-            return bp.GetInstance(context);
+            object instance;
+            bp.GetInstance(context, out instance);
+            return instance;
         }
 
         /// <summary>
@@ -155,6 +167,33 @@ namespace Griffin.Container
             }
 
             return services;
+        }
+
+        object ICreateCallback.InstanceCreated(CreateContext context, IBuildPlan buildPlan, object instance)
+        {
+            if (_decorators.Count == 0)
+                return instance;
+
+            var ctx = new DecoratorContext(buildPlan.Services, buildPlan.Lifetime)
+                          {Instance = instance, RequestedService = context.RequestedService};
+            foreach (var decorator in _decorators)
+            {
+                decorator.Decorate(ctx);
+            }
+
+            return ctx.Instance;
+        }
+
+        /// <summary>
+        /// Add a new decorator
+        /// </summary>
+        /// <param name="decorator">Decorator to run</param>
+        /// <remarks>Read about the decorator pattern to understand what these do. The interface is called for
+        /// each new instance which is created.</remarks>
+        public void AddDecorator(IInstanceDecorator decorator)
+        {
+            if (decorator == null) throw new ArgumentNullException("decorator");
+            _decorators.Add(decorator);
         }
     }
 }

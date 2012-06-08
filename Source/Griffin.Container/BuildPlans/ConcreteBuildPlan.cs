@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Griffin.Container.InstanceStrategies;
 
@@ -12,15 +14,24 @@ namespace Griffin.Container.BuildPlans
         private readonly Type _concreteType;
         private readonly IInstanceStrategy _instanceStrategy;
         private ObjectActivator _factoryMethod;
-        private IBuildPlan[] _parameters;
+        private ConstructorParameter[] _parameters;
+        private ICreateCallback _createCallback;
+
+        private class ConstructorParameter
+        {
+            public Type ServiceType { get; set; }
+            public IBuildPlan BuildPlan { get; set; }
+        }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConcreteBuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
+        /// <param name="services">Services that the concrete implements </param>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="instanceStrategy">Used to either fetch or create an instance.</param>
-        public ConcreteBuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy)
+        public ConcreteBuildPlan(Type concreteType, IEnumerable<Type> services, Lifetime lifetime, IInstanceStrategy instanceStrategy)
         {
             if( concreteType == null && instanceStrategy == null)
                 throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
@@ -28,19 +39,7 @@ namespace Griffin.Container.BuildPlans
             Lifetime = lifetime;
             _concreteType = concreteType;
             _instanceStrategy = instanceStrategy;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConcreteBuildPlan"/> class.
-        /// </summary>
-        /// <param name="concreteType">Type to construct.</param>
-        /// <param name="instanceStrategy">Used to determine if a new instance or a stored one should be returned.</param>
-        public ConcreteBuildPlan(Type concreteType, IInstanceStrategy instanceStrategy)
-        {
-            if (concreteType == null && instanceStrategy == null)
-                throw new ArgumentException("Either concreteType or instanceStrategy must be specified.");
-            _concreteType = concreteType;
-            _instanceStrategy = instanceStrategy;
+            Services = services.ToArray();
         }
 
         /// <summary>
@@ -54,6 +53,11 @@ namespace Griffin.Container.BuildPlans
         public string DisplayName
         {
             get { return ConcreteType.FullName; }
+        }
+
+        public void SetCreateCallback(ICreateCallback callback)
+        {
+            _createCallback = callback;
         }
 
 
@@ -78,7 +82,7 @@ namespace Griffin.Container.BuildPlans
         public virtual void SetConstructor(ConstructorInfo constructor)
         {
             Constructor = constructor;
-            _parameters = new IBuildPlan[Constructor.GetParameters().Length];
+            _parameters = new ConstructorParameter[Constructor.GetParameters().Length];
             _factoryMethod = GetCreateDelegate();
         }
 
@@ -99,24 +103,39 @@ namespace Griffin.Container.BuildPlans
         /// <param name="bp">Plan used to construct the parameter</param>
         public void AddConstructorPlan(int index, IBuildPlan bp)
         {
-            _parameters[index] = bp;
+            if (bp == null) throw new ArgumentNullException("bp");
+            if (index < 0 || index >= Constructor.GetParameters().Length)
+                throw new ArgumentOutOfRangeException("index");
+
+            _parameters[index] = new ConstructorParameter
+                                     {
+                                         BuildPlan = bp,
+                                         ServiceType = Constructor.GetParameters()[index].ParameterType
+                                     };
         }
 
         /// <summary>
         /// Get the instance.
         /// </summary>
         /// <param name="context">Context used to create instances.</param>
-        /// <returns>Instance if found; otherwise null.</returns>
-        public virtual object GetInstance(CreateContext context)
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// If an existing or an new instance is returned.
+        /// </returns>
+        public virtual InstanceResult GetInstance(CreateContext context, out object instance)
         {
-            var strategyContext = new InstanceStrategyContext(this, () => Create(context))
-                                      {
-                                          ScopedStorage = context.Scoped,
-                                          SingletonStorage = context.Singletons,
-                                          Container = context.Container
-                                      };
-            return _instanceStrategy.GetInstance(strategyContext);
+            var strategyContext = new InstanceStrategyContext(this, context, () => Create(context));
+            var result = _instanceStrategy.GetInstance(strategyContext, out instance);
+            if (result == InstanceResult.Created && _createCallback != null)
+                instance = _createCallback.InstanceCreated(context, this, instance);
+
+            return result;
         }
+
+        /// <summary>
+        /// gets services that the concrete implements.
+        /// </summary>
+        public Type[] Services { get; private set; }
 
 
         /// <summary>
@@ -129,7 +148,10 @@ namespace Griffin.Container.BuildPlans
             var parameters = new object[_parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
             {
-                parameters[i] = _parameters[i].GetInstance(context);
+                var paramContext = context.Clone(_parameters[i].ServiceType);
+                object instance;
+                _parameters[i].BuildPlan.GetInstance(paramContext, out instance);
+                parameters[i] = instance;
             }
 
             return Create(context, parameters);
@@ -142,20 +164,24 @@ namespace Griffin.Container.BuildPlans
         /// <returns>Created instance.</returns>
         protected virtual object Create(CreateContext context, object[] arguments)
         {
-            return _factoryMethod(arguments);
+            return  _factoryMethod(arguments);
+            /*return _createCallback != null
+                       ? _createCallback.InstanceCreated(context, instance)
+                       : instance;*/
         }
 
         #region Nested type: InstanceStrategyContext
 
-        private class InstanceStrategyContext : IInstanceStrategyContext
+        private class InstanceStrategyContext : IConcreteInstanceStrategyContext
         {
             private readonly ConcreteBuildPlan _bp;
             private readonly Func<object> _factory;
 
-            public InstanceStrategyContext(ConcreteBuildPlan bp, Func<object> factory)
+            public InstanceStrategyContext(ConcreteBuildPlan bp, CreateContext createContext, Func<object> factory)
             {
                 _bp = bp;
                 _factory = factory;
+                CreateContext = createContext;
             }
 
             #region IInstanceStrategyContext Members
@@ -165,11 +191,8 @@ namespace Griffin.Container.BuildPlans
                 get { return _bp; }
             }
 
-            public IInstanceStorage SingletonStorage { get; set; }
+            public CreateContext CreateContext { get; private set; }
 
-            public IInstanceStorage ScopedStorage { get; set; }
-
-            public IServiceLocator Container { get; set; }
 
             public object CreateInstance()
             {

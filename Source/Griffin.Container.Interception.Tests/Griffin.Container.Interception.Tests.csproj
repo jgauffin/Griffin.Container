@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}</ProjectGuid>
+    <ProjectGuid>{753B0BC0-E508-412D-8495-BA8B05B6CA74}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Griffin.Container.Interception</RootNamespace>
-    <AssemblyName>Griffin.Container.Interception</AssemblyName>
+    <RootNamespace>Griffin.Container.Interception.Tests</RootNamespace>
+    <AssemblyName>Griffin.Container.Interception.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,19 +38,19 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CallContext.cs" />
-    <Compile Include="CastleDecorator.cs" />
-    <Compile Include="DelegateDecoratorFilter.cs" />
-    <Compile Include="IDecoratorFilter.cs" />
-    <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="ExceptionInterceptor.cs" />
-    <Compile Include="ExceptionLoggerDecorator.cs" />
-    <Compile Include="IExceptionLogger.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Griffin.Container.Interception\Griffin.Container.Interception.csproj">
+      <Project>{56C1EE78-673A-4013-9BBB-9B1C3D096D5C}</Project>
+      <Name>Griffin.Container.Interception</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Griffin.Container\Griffin.Container.csproj">
       <Project>{F483D7E5-BE37-465D-A27D-E6A383B9FF08}</Project>
       <Name>Griffin.Container</Name>

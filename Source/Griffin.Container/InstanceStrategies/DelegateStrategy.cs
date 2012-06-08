@@ -27,17 +27,21 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        public object GetInstance(IInstanceStrategyContext context)
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>
+        /// If the instance was created or loaded from a storage.
+        /// </returns>
+        public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
             switch (_lifetime)
             {
                 case Lifetime.Transient:
-                    return _factory(context.Container);
+                    instance = _factory(context.CreateContext.Container);
+                    return InstanceResult.Created;
                 case Lifetime.Singleton:
-                    return GetSingleton(context);
+                    return GetSingleton(context, out instance);
                 case Lifetime.Scoped:
-                    return GetScoped(context);
+                    return GetScoped(context, out instance);
             }
 
             throw new NotSupportedException(string.Format("Lifetime not supported: {0}.", _lifetime));
@@ -54,29 +58,30 @@ namespace Griffin.Container.InstanceStrategies
 
         #endregion
 
-        private object GetSingleton(IInstanceStrategyContext context)
+        private InstanceResult GetSingleton(IInstanceStrategyContext context, out object instance)
         {
-            var existing = context.SingletonStorage.Retreive(context.BuildPlan);
-            if (existing != null)
-                return existing;
+            instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+            if (instance != null)
+                return InstanceResult.Loaded;
 
-            existing = _factory(context.Container);
-            context.SingletonStorage.Store(context.BuildPlan, existing);
-            return existing;
+            instance = _factory(context.CreateContext.Container);
+            context.CreateContext.SingletonStorage.Store(context.BuildPlan, instance);
+            return InstanceResult.Created;
         }
 
-        private object GetScoped(IInstanceStrategyContext context)
+        private InstanceResult GetScoped(IInstanceStrategyContext context, out object instance)
         {
-            if (context.ScopedStorage == null)
+            if (context.CreateContext.ScopedStorage == null)
                 throw new NotSupportedException("Scoped registrations need a scoped container.");
 
-            var existing = context.ScopedStorage.Retreive(context.BuildPlan);
-            if (existing != null)
-                return existing;
+            instance = context.CreateContext.ScopedStorage.Retreive(context.BuildPlan);
+            if (instance != null)
+                return InstanceResult.Loaded;
 
-            existing = _factory(context.Container);
-            context.ScopedStorage.Store(context.BuildPlan, existing);
-            return existing;
+            instance = _factory(context.CreateContext.Container);
+
+            context.CreateContext.ScopedStorage.Store(context.BuildPlan, instance);
+            return InstanceResult.Created;
         }
     }
 }

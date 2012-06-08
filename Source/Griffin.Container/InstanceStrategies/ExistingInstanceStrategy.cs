@@ -25,10 +25,14 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        public object GetInstance(IInstanceStrategyContext context)
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>
+        /// If the instance was created or loaded from a storage.
+        /// </returns>
+        public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
-            return _instance;
+            instance = _instance;
+            return InstanceResult.Loaded;
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Griffin.Container
 {
@@ -8,9 +10,30 @@ namespace Griffin.Container
     public class DecoratorContext
     {
         /// <summary>
-        /// Gets service which was requested-
+        /// Initializes a new instance of the <see cref="DecoratorContext"/> class.
         /// </summary>
-        public Type ServiceType { get; private set; }
+        /// <param name="services">The requested service.</param>
+        /// <param name="lifetime">The lifetime of the service.</param>
+        public DecoratorContext(IEnumerable<Type>  services, Lifetime lifetime)
+        {
+            Services = services.ToArray();
+            Lifetime = lifetime;
+        }
+
+        /// <summary>
+        /// Gets type of lifetime for the object.
+        /// </summary>
+        public Lifetime Lifetime { get; private set; }
+
+        /// <summary>
+        /// Gets service that the concrete implements
+        /// </summary>
+        public Type[] Services { get; private set; }
+
+        /// <summary>
+        /// Gets service which was requested.
+        /// </summary>
+        public Type RequestedService { get; set; }
 
         /// <summary>
         /// Gets or sets current instance.

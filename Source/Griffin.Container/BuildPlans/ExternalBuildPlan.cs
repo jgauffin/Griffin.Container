@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container.BuildPlans
@@ -10,36 +12,45 @@ namespace Griffin.Container.BuildPlans
     {
         private readonly Lifetime _lifetime;
         private readonly IInstanceStrategy _instanceStrategy;
+        private ICreateCallback _callback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExternalBuildPlan"/> class.
         /// </summary>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="instanceStrategy">The instance strategy.</param>
-        public ExternalBuildPlan(Lifetime lifetime, IInstanceStrategy instanceStrategy)
+        public ExternalBuildPlan(IEnumerable<Type> services, Lifetime lifetime, IInstanceStrategy instanceStrategy)
         {
             if (instanceStrategy == null) throw new ArgumentNullException("instanceStrategy");
             _lifetime = lifetime;
             _instanceStrategy = instanceStrategy;
+            Services = services.ToArray();
         }
 
         /// <summary>
         /// Get the instance.
         /// </summary>
         /// <param name="context">Context used to create instances.</param>
-        /// <returns>Instance if found; otherwise null.</returns>
-        public object GetInstance(CreateContext context)
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// Instance if found; otherwise null.
+        /// </returns>
+        public InstanceResult GetInstance(CreateContext context, out object instance)
         {
             var strategyContext = new ExternalInstanceStrategyContext
             {
                 BuildPlan = this,
-                ScopedStorage = context.Scoped,
-                SingletonStorage = context.Singletons,
-                Container = context.Container
+                CreateContext = context
             };
 
-            return _instanceStrategy.GetInstance(strategyContext);
+            var result =  _instanceStrategy.GetInstance(strategyContext, out instance);
+            if (result == InstanceResult.Created && _callback != null)
+                instance = _callback.InstanceCreated(context, this, instance);
+
+            return result;
         }
+
+        public Type[] Services { get; private set; }
 
         /// <summary>
         /// Gets lifetime of the object.
@@ -57,16 +68,20 @@ namespace Griffin.Container.BuildPlans
             get { return _instanceStrategy.GetType().FullName; }
         }
 
+        /// <summary>
+        /// Callback invoked each time a new instance is created.
+        /// </summary>
+        /// <param name="callback">Callback to invoke</param>
+        public void SetCreateCallback(ICreateCallback callback)
+        {
+            if (callback == null) throw new ArgumentNullException("callback");
+            _callback = callback;
+        }
+
         class ExternalInstanceStrategyContext : IInstanceStrategyContext
         {
             public IBuildPlan BuildPlan { get;  set; }
-            public IInstanceStorage SingletonStorage { get;  set; }
-            public IInstanceStorage ScopedStorage { get;  set; }
-            public IServiceLocator Container { get;  set; }
-            public object CreateInstance()
-            {
-                throw new NotSupportedException("Create the instance yourself, huh.");
-            }
+            public CreateContext CreateContext { get; set; }
         }
     }
 }

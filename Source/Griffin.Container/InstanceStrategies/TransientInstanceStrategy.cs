@@ -3,6 +3,7 @@ namespace Griffin.Container.InstanceStrategies
     /// <summary>
     /// Create a new instance every time
     /// </summary>
+    /// <remarks>Requires a <see cref="IConcreteInstanceStrategyContext"/></remarks>
     public class TransientInstanceStrategy : IInstanceStrategy
     {
         #region IInstanceStrategy Members
@@ -11,10 +12,15 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        public object GetInstance(IInstanceStrategyContext context)
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>
+        /// Created/Existing instance.
+        /// </returns>
+        public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
-            return context.CreateInstance();
+            var ctx = (IConcreteInstanceStrategyContext)context;
+            instance = ctx.CreateInstance();
+            return InstanceResult.Created;
         }
 
         /// <summary>

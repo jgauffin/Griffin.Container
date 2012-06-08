@@ -15,18 +15,10 @@ namespace Griffin.Container.BuildPlans
         /// Initializes a new instance of the <see cref="GenericBuildPlan"/> class.
         /// </summary>
         /// <param name="concreteType">Type to construct.</param>
+        /// <param name="services">Servies</param>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="instanceStrategy">Used to either fetch or create an instance.</param>
-        public GenericBuildPlan(Type concreteType, Lifetime lifetime, IInstanceStrategy instanceStrategy) : base(concreteType, lifetime, instanceStrategy)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GenericBuildPlan"/> class.
-        /// </summary>
-        /// <param name="concreteType">Type of the concrete.</param>
-        /// <param name="instanceStrategy">The instance strategy.</param>
-        public GenericBuildPlan(Type concreteType, IInstanceStrategy instanceStrategy) : base(concreteType, instanceStrategy)
+        public GenericBuildPlan(Type concreteType, IEnumerable<Type> services, Lifetime lifetime, IInstanceStrategy instanceStrategy) : base(concreteType, services, lifetime, instanceStrategy)
         {
         }
 

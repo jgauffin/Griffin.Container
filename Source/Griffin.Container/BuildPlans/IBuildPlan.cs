@@ -1,3 +1,6 @@
+using System;
+using Griffin.Container.InstanceStrategies;
+
 namespace Griffin.Container.BuildPlans
 {
     /// <summary>
@@ -10,8 +13,19 @@ namespace Griffin.Container.BuildPlans
         /// Get the instance.
         /// </summary>
         /// <param name="context">Context used to create instances.</param>
-        /// <returns>Instance if found; otherwise null.</returns>
-        object GetInstance(CreateContext context);
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// If an existing or an new instance is returned.
+        /// </returns>
+        /// <remarks>
+        /// Use one of the set methods to assigned the instance.
+        /// </remarks>
+        InstanceResult GetInstance(CreateContext context, out object instance);
+
+        /// <summary>
+        /// gets services that the concrete implements.
+        /// </summary>
+        Type[] Services { get; }
 
         /// <summary>
         /// Gets lifetime of the object.
@@ -23,5 +37,12 @@ namespace Griffin.Container.BuildPlans
         /// </summary>
         string DisplayName { get; }
 
+        /// <summary>
+        /// Callback invoked each time a new instance is created.
+        /// </summary>
+        /// <param name="callback">Callback to invoke</param>
+        void SetCreateCallback(ICreateCallback callback);
     }
+
+    
 }

@@ -37,10 +37,10 @@ namespace Griffin.Container
         /// Builds the container directly.
         /// </summary>
         /// <returns>Generated container.</returns>
-        public IParentContainer Build()
+        public Container Build()
         {
             var builder = new ContainerBuilder();
-            return builder.Build(this);
+            return (Container)builder.Build(this);
         }
 
 

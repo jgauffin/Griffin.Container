@@ -5,6 +5,7 @@ namespace Griffin.Container.InstanceStrategies
     /// <summary>
     /// Used to fetch or created scoped objects
     /// </summary>
+    /// <remarks>Requires a <see cref="IConcreteInstanceStrategyContext"/></remarks>
     public class ScopedInstanceStrategy : IInstanceStrategy
     {
         private readonly Type _concrete;
@@ -24,21 +25,25 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        public object GetInstance(IInstanceStrategyContext context)
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>
+        /// Created/Existing instance.
+        /// </returns>
+        public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
-            if (context.ScopedStorage == null)
+            if (context.CreateContext.ScopedStorage == null)
                 throw new InvalidOperationException("Class '" + _concrete.FullName +
                                                     "' is a scoped object and can therefore not be created from the parent container.");
 
-            var existing = context.ScopedStorage.Retreive(context.BuildPlan);
-            if (existing != null)
-                return existing;
+            instance = context.CreateContext.ScopedStorage.Retreive(context.BuildPlan);
+            if (instance != null)
+                return InstanceResult.Loaded;
 
-            existing = context.CreateInstance();
+            var ctx = (IConcreteInstanceStrategyContext)context;
+            instance = ctx.CreateInstance();
 
-            context.ScopedStorage.Store(context.BuildPlan, existing);
-            return existing;
+            context.CreateContext.ScopedStorage.Store(context.BuildPlan, instance);
+            return InstanceResult.Created;
         }
 
         /// <summary>

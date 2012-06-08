@@ -3,16 +3,16 @@ using System;
 namespace Griffin.Container
 {
     /// <summary>
-    /// Thrown when a dependency can not be resolved.
+    /// Tried to build a concrete without finding all dependencies.
     /// </summary>
-    public class TypeResolutionFailedException : Exception
+    public class ConcreteDependencyMissingException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypeResolutionFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ConcreteDependencyMissingException"/> class.
         /// </summary>
         /// <param name="concreteType">Type of the concrete which could not be built.</param>
         /// <param name="error">The error.</param>
-        public TypeResolutionFailedException(Type concreteType, FailureReasons error)
+        public ConcreteDependencyMissingException(Type concreteType, FailureReasons error)
             : base(string.Format("Failed to lookup '{0}'.", concreteType.FullName))
         {
             ConcreteBeingBuilt = concreteType;

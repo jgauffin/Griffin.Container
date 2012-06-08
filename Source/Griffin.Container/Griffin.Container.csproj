@@ -58,11 +58,13 @@
     <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
     <Compile Include="DomainEvents\NamespaceDoc.cs" />
     <Compile Include="BuildPlans\IBuildPlan.cs" />
+    <Compile Include="ICreateCallback.cs" />
     <Compile Include="IInstanceDecorator.cs" />
     <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
     <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategyContext.cs" />
+    <Compile Include="InstanceStrategies\InstanceResult.cs" />
     <Compile Include="InstanceStrategies\NamespaceDoc.cs" />
     <Compile Include="InstanceStrategies\ScopedInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\SingletonFactoryStrategy.cs" />
@@ -91,8 +93,9 @@
     <Compile Include="Lifetime.cs" />
     <Compile Include="NonFrameworkClasses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceNotRegisteredException.cs" />
     <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeResolutionFailedException.cs" />
+    <Compile Include="ConcreteDependencyMissingException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Registration\" />

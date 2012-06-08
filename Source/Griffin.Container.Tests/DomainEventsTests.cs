@@ -19,9 +19,9 @@ namespace Griffin.Container.Tests
             {
                 DomainEvent.Publish("Hello world");
 
-                var service1 = scope.Resolve<Subscriber1>();
+                var service1 = scope.Resolve<IConcrete1>();
                 Assert.True(service1.Handled);
-                var service2 = scope.Resolve<Subscriber2>();
+                var service2 = scope.Resolve<IConcrete2>();
                 Assert.True(service2.Handled);
             }
 
@@ -52,16 +52,16 @@ namespace Griffin.Container.Tests
                 {
                     DomainEvent.Publish("Hello world");
 
-                    var service3 = scope2.Resolve<Subscriber1>();
+                    var service3 = scope2.Resolve<IConcrete1>();
                     Assert.True(service3.Handled);
-                    var service4 = scope2.Resolve<Subscriber2>();
+                    var service4 = scope2.Resolve<IConcrete2>();
                     Assert.True(service4.Handled);
                 }
 
                 DomainEvent.Publish("Hello world");
-                var service1 = scope.Resolve<Subscriber1>();
+                var service1 = scope.Resolve<IConcrete1>();
                 Assert.True(service1.Handled);
-                var service2 = scope.Resolve<Subscriber2>();
+                var service2 = scope.Resolve<IConcrete2>();
                 Assert.True(service2.Handled);
             }
 
@@ -69,8 +69,17 @@ namespace Griffin.Container.Tests
 
         }
 
+        interface IConcrete1 : ISubscriberOf<string>
+        {
+            bool Handled { get; }
+             
+        }
 
-        class Subscriber1 : ISubscriberOf<string>
+        interface IConcrete2 : ISubscriberOf<string>
+        {
+            bool Handled { get; }
+        }
+        class Subscriber1 : ISubscriberOf<string>, IConcrete1
         {
             /// <summary>
             /// Handle the domain event
@@ -85,7 +94,7 @@ namespace Griffin.Container.Tests
             public bool Handled { get; set; }
         }
 
-        class Subscriber2 :ISubscriberOf<string>
+        class Subscriber2 :ISubscriberOf<string>, IConcrete2
         {
             /// <summary>
             /// Handle the domain event

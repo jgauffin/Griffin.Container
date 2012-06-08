@@ -3,6 +3,7 @@ namespace Griffin.Container.InstanceStrategies
     /// <summary>
     /// Return the same instance every time.
     /// </summary>
+    /// <remarks>Requires a <see cref="IConcreteInstanceStrategyContext"/></remarks>
     public class SingletonFactoryStrategy : IInstanceStrategy
     {
         #region IInstanceStrategy Members
@@ -11,24 +12,28 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        public object GetInstance(IInstanceStrategyContext context)
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>
+        /// If the instance was created or loaded from a storage.
+        /// </returns>
+        public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
-            var existing = context.SingletonStorage.Retreive(context.BuildPlan);
-            if (existing != null)
-                return existing;
+            instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+            if (instance != null)
+                return InstanceResult.Loaded;
 
-            lock(context.SingletonStorage)
+            lock (context.CreateContext.SingletonStorage)
             {
-                existing = context.SingletonStorage.Retreive(context.BuildPlan);
-                if (existing != null)
-                    return existing;
+                instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+                if (instance != null)
+                    return InstanceResult.Loaded;
 
-                existing = context.CreateInstance();
-                context.SingletonStorage.Store(context.BuildPlan, existing);
+                var ctx = (IConcreteInstanceStrategyContext)context;
+                instance = ctx.CreateInstance();
+                context.CreateContext.SingletonStorage.Store(context.BuildPlan, instance);
             }
 
-            return existing;
+            return InstanceResult.Created;
         }
 
         /// <summary>

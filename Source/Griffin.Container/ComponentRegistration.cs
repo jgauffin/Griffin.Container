@@ -94,7 +94,8 @@ namespace Griffin.Container
                 AddService(service);
             }
 
-            AddService(ConcreteType);
+            if (!Services.Any())
+                AddService(ConcreteType);
         }
     }
 }

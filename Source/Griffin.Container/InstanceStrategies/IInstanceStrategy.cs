@@ -9,8 +9,9 @@ namespace Griffin.Container.InstanceStrategies
         /// Get instance.
         /// </summary>
         /// <param name="context">Information used to create/fetch instance.</param>
-        /// <returns>Created/Existing instance.</returns>
-        object GetInstance(IInstanceStrategyContext context);
+        /// <param name="instance">Instance that was loaded/created</param>
+        /// <returns>If the instance was created or loaded from a storage.</returns>
+        InstanceResult GetInstance(IInstanceStrategyContext context, out object instance);
 
         /// <summary>
         /// Gets if the strategy can generate an instance by itself.

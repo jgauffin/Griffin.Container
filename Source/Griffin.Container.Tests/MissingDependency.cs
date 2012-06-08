@@ -15,7 +15,7 @@ namespace Griffin.Container.Tests
             registrar.RegisterConcrete<Service1>();
 
             var builder = new ContainerBuilder();
-            Assert.Throws<TypeResolutionFailedException>(() =>builder.Build(registrar));
+            Assert.Throws<ConcreteDependencyMissingException>(() =>builder.Build(registrar));
 
 
         }

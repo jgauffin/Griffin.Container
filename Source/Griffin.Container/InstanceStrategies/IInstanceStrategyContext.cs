@@ -13,27 +13,28 @@ namespace Griffin.Container.InstanceStrategies
         IBuildPlan BuildPlan { get; }
 
         /// <summary>
-        /// Storage for singletons.
+        /// Gets context specified by the container
         /// </summary>
-        /// <remarks>Use the build plan as key</remarks>
-        IInstanceStorage SingletonStorage { get; }
+        /// <remarks>Use one of the set methods to </remarks>
+        CreateContext CreateContext { get; }
+    }
 
+    /// <summary>
+    /// context for instance strategies.
+    /// </summary>
+    public interface IConcreteInstanceStrategyContext : IInstanceStrategyContext
+    {
         /// <summary>
-        /// Storage for scoped objects
+        /// Create instance using the build plans factory method.
         /// </summary>
-        /// /// <remarks>Use the build plan as key</remarks>
-        IInstanceStorage ScopedStorage { get; }
+        object CreateInstance();
+    }
 
-
-        /// <summary>
-        /// Gets container which is requesting an instance.
-        /// </summary>
-        IServiceLocator Container { get; }
-
+    /*
+     * 
         /// <summary>
         /// Create a new isntance
         /// </summary>
         /// <returns>Created instanc.e</returns>
-        object CreateInstance();
-    }
+        object CreateInstance();*/
 }

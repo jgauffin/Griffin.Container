@@ -162,13 +162,13 @@ namespace Griffin.Container
                 if (!strategy.IsInstanceFactory)
                 {
                     var buildPlan = registration.ConcreteType.IsGenericType
-                        ? new GenericBuildPlan(registration.ConcreteType, registration.Lifetime, strategy)
-                        : new ConcreteBuildPlan(registration.ConcreteType, registration.Lifetime, strategy);
+                        ? new GenericBuildPlan(registration.ConcreteType, registration.Services, registration.Lifetime, strategy)
+                        : new ConcreteBuildPlan(registration.ConcreteType, registration.Services, registration.Lifetime, strategy);
 
                     ConstructorInfo constructor;
                     var error = TryGetConstructor(registration.ConcreteType, out constructor);
                     if (error != null)
-                        throw new TypeResolutionFailedException(registration.ConcreteType, error);
+                        throw new ConcreteDependencyMissingException(registration.ConcreteType, error);
 
                     buildPlan.SetConstructor(constructor);
                     _buildPlans.Add(registration.ConcreteType, buildPlan);
@@ -184,7 +184,7 @@ namespace Griffin.Container
                             _serviceMappings.Add(service, buildPlans);
                         }
 
-                        var bp = new ExternalBuildPlan(registration.Lifetime, strategy);
+                        var bp = new ExternalBuildPlan(registration.Services, registration.Lifetime, strategy);
                         buildPlans.Add(bp);
                     }
 
