@@ -22,6 +22,9 @@ namespace Griffin.Container.Mvc3
             _container = container;
         }
 
+        /// <summary>
+        /// Gets current child container
+        /// </summary>
         protected IChildContainer ChildContainer
         {
             get { return _childContainer ?? (_childContainer = _container.CreateChildContainer()); }

@@ -14,22 +14,27 @@ namespace Griffin.Container
     {
         private readonly List<ComponentRegistration> _registrations = new List<ComponentRegistration>();
         private readonly IServiceFilter _serviceFilter;
+        private readonly Lifetime _defaultLifetime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerRegistrar"/> class.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        public ContainerRegistrar(IServiceFilter filter)
+        /// <param name="defaultLifetime">The default lifetime if not specified in the methods.</param>
+        public ContainerRegistrar(IServiceFilter filter, Lifetime defaultLifetime = Lifetime.Scoped)
         {
             if (filter == null) throw new ArgumentNullException("filter");
             _serviceFilter = filter;
+            _defaultLifetime = defaultLifetime;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerRegistrar"/> class.
         /// </summary>
-        public ContainerRegistrar()
+        /// <param name="defaultLifetime">The default lifetime if not specified in the methods.</param>
+        public ContainerRegistrar(Lifetime defaultLifetime = Lifetime.Scoped)
         {
+            _defaultLifetime = defaultLifetime;
             _serviceFilter = new NonFrameworkClasses();
         }
 
@@ -49,7 +54,7 @@ namespace Griffin.Container
         /// <summary>
         /// Register classes which is decorated with the <see cref="ComponentAttribute"/>
         /// </summary>
-        /// <param name="defaultLifetime">Lifetime to use if not specified in the <see cref="ComponentAttribute"/>.</param>
+        /// <param name="defaultLifetime">Lifetime to use if not specified in the <see cref="ComponentAttribute"/>. Set to default to use the container default.</param>
         /// <param name="path">File path to load assemblies from.</param>
         /// <param name="filePattern">File pattern to search for, same as for <see cref="Directory.GetFiles(string,string)"/>.</param>
         public void RegisterComponents(Lifetime defaultLifetime, string path, string filePattern)
@@ -57,8 +62,7 @@ namespace Griffin.Container
             if (path == null) throw new ArgumentNullException("path");
             if (filePattern == null) throw new ArgumentNullException("filePattern");
             if (defaultLifetime == Lifetime.Default)
-                throw new ArgumentOutOfRangeException("defaultLifetime", "May not be set to Lifetime.Default.");
-
+                defaultLifetime = _defaultLifetime;
 
             foreach (var assembly in AssemblyUtils.LoadAssemblies(path, filePattern))
             {
@@ -75,7 +79,7 @@ namespace Griffin.Container
         {
             if (assemblies == null) throw new ArgumentNullException("assemblies");
             if (defaultLifetime == Lifetime.Default)
-                throw new ArgumentOutOfRangeException("defaultLifetime", "May not be set to Lifetime.Default.");
+                defaultLifetime = _defaultLifetime;
 
             var componentType = typeof (ComponentAttribute);
             foreach (var assembly in assemblies)
@@ -140,8 +144,10 @@ namespace Griffin.Container
         /// </summary>
         /// <typeparam name="TConcrete">Object to create. Register it's implemented interfaces</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterConcrete<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class
+        public void RegisterConcrete<TConcrete>(Lifetime lifetime = Lifetime.Default) where TConcrete : class
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
             RegisterConcrete(typeof (TConcrete), lifetime);
         }
 
@@ -151,11 +157,13 @@ namespace Griffin.Container
         /// <typeparam name="TService">Requested service</typeparam>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the returned object</param>
-        public void RegisterService<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterService<TService>(Func<IServiceLocator, TService> factory, Lifetime lifetime = Lifetime.Default)
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
             var registration = CreateRegistration(null, lifetime);
             registration.AddService(typeof (TService));
-            registration.InstanceStrategy = new DelegateStrategy(factory, lifetime);
+            registration.InstanceStrategy = new DelegateStrategy<TService>(factory, lifetime);
             Add(registration);
         }
 
@@ -165,10 +173,13 @@ namespace Griffin.Container
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Scoped) 
+        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Default) 
             where TService : class
             where TConcrete : TService
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
+
             RegisterType(typeof (TService), typeof (TConcrete), lifetime);
         }
 
@@ -177,8 +188,11 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="concrete">Type to create, will be registered as the implemented interfaces.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterConcrete(Type concrete, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterConcrete(Type concrete, Lifetime lifetime = Lifetime.Default)
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
+
             var registration = CreateRegistration(concrete, lifetime);
             registration.AddServices(_serviceFilter);
             Add(registration);
@@ -192,8 +206,11 @@ namespace Griffin.Container
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         public void RegisterService(Type service, Func<IServiceLocator, object> factory,
-                                 Lifetime lifetime = Lifetime.Scoped)
+                                 Lifetime lifetime = Lifetime.Default)
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
+
             var registration = CreateRegistration(null, lifetime);
             registration.AddService(service);
             registration.InstanceStrategy = new DelegateStrategy(factory, lifetime);
@@ -206,8 +223,11 @@ namespace Griffin.Container
         /// <param name="service">Type which will be requested</param>
         /// <param name="concrete">Class which will be constructed and returned.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service</param>
-        public void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Scoped)
+        public void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Default)
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
+
             if (!service.IsAssignableFromGeneric(concrete) && !service.IsAssignableFrom(concrete))
                 throw new InvalidOperationException(string.Format("Type {0} is not assignable from {1}.",
                                                                   service.FullName, concrete.FullName));
@@ -252,6 +272,9 @@ namespace Griffin.Container
         /// <param name="lifetime">Lifetime to use</param>
         protected virtual void RegisterComponent(Type concreteType, Lifetime lifetime)
         {
+            if (lifetime == Lifetime.Default)
+                lifetime = _defaultLifetime;
+
             var registration = CreateRegistration(concreteType, lifetime);
             registration.AddServices(_serviceFilter);
             Add(registration);

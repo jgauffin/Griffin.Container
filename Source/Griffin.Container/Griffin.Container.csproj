@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +48,18 @@
     <Compile Include="BuildPlans\GenericBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
     <Compile Include="CircularDependenciesException.cs" />
+    <Compile Include="Commands\CommandDispatcher.cs" />
+    <Compile Include="Commands\CommandExceptionInfo.cs" />
+    <Compile Include="Commands\CommandValidationFailedException.cs" />
+    <Compile Include="Commands\ExceptionDecorator.cs" />
+    <Compile Include="Commands\ContainerDispatcher.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandDispatcher.cs" />
+    <Compile Include="Commands\IDecoratorFactory.cs" />
+    <Compile Include="Commands\IExceptionLogger.cs" />
+    <Compile Include="Commands\IHandlerOf.cs" />
+    <Compile Include="Commands\NamespaceDoc.cs" />
+    <Compile Include="Commands\ValidationDecorator.cs" />
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
     <Compile Include="DecoratorContext.cs" />
@@ -65,6 +78,7 @@
     <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\IInstanceStrategyContext.cs" />
     <Compile Include="InstanceStrategies\InstanceResult.cs" />
+    <Compile Include="InstanceStrategies\InstanceStrategyBase.cs" />
     <Compile Include="InstanceStrategies\NamespaceDoc.cs" />
     <Compile Include="InstanceStrategies\ScopedInstanceStrategy.cs" />
     <Compile Include="InstanceStrategies\SingletonFactoryStrategy.cs" />

@@ -22,6 +22,11 @@ namespace Griffin.Container.BuildPlans
         {
         }
 
+
+        /// <summary>
+        /// Used to create the delegate used to create the instance.
+        /// </summary>
+        /// <returns></returns>
         protected override ObjectActivator GetCreateDelegate()
         {
             return null;

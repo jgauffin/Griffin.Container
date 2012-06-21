@@ -31,6 +31,12 @@ namespace Griffin.Container
         /// </summary>
         public Type MissingService { get; set; }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             return string.Format("Failed to build type '{0}', could not find service '{1}'.", Constructor.ReflectedType,

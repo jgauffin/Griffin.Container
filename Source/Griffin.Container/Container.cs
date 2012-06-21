@@ -66,6 +66,15 @@ namespace Griffin.Container
             return _childContainer;
         }
 
+        /// <summary>
+        /// Gets current child
+        /// </summary>
+        /// <remarks>Returns the last one created (in the current thread) if several child containers have been created.</remarks>
+        public IChildContainer CurrentChild
+        {
+            get { return _childContainer; }
+        }
+
         #endregion
 
         /// <summary>

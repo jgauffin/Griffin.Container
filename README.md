@@ -3,9 +3,14 @@ Griffin.Container
 
 Inversion of control container with (almost) zero configuration.
 
-also knows as "The drunken container".
-
 # Core
+
+Features:
+
+* The regular =)
+* [Commands](http://blog.gauffin.org/2012/06/griffin-container-introducing-command-support/)
+* Decorators
+* Interceptors
 
 ## Installation
 

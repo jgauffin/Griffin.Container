@@ -10,5 +10,11 @@ namespace Griffin.Container
         /// </summary>
         /// <returns>Child container.</returns>
         IChildContainer CreateChildContainer();
+
+        /// <summary>
+        /// Gets current child
+        /// </summary>
+        /// <remarks>Returns the last one created (in the current thread) if several child containers have been created-</remarks>
+        IChildContainer CurrentChild { get; }
     }
 }

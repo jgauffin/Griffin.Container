@@ -23,9 +23,9 @@ namespace Griffin.Container
             if (string.IsNullOrEmpty(service.Namespace))
                 return false;
 
-            if (service.Namespace.StartsWith("System."))
+            if (service.Namespace.StartsWith("System.") || service.Namespace == "System")
                 return false;
-            if (service.Namespace.StartsWith("Microsoft."))
+            if (service.Namespace.StartsWith("Microsoft.") || service.Namespace == "Microsoft")
                 return false;
 
             return true;
