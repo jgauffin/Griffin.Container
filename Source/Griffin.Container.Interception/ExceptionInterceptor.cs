@@ -1,5 +1,6 @@
 using System;
 using Castle.DynamicProxy;
+using Griffin.Container.Interception.Logging;
 
 namespace Griffin.Container.Interception
 {

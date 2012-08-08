@@ -23,7 +23,7 @@ namespace Griffin.Container.BuildPlans
         InstanceResult GetInstance(CreateContext context, out object instance);
 
         /// <summary>
-        /// gets services that the concrete implements.
+        /// Gets services that the concrete implements.
         /// </summary>
         Type[] Services { get; }
 

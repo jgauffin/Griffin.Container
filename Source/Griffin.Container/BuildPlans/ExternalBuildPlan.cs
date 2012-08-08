@@ -17,6 +17,7 @@ namespace Griffin.Container.BuildPlans
         /// <summary>
         /// Initializes a new instance of the <see cref="ExternalBuildPlan"/> class.
         /// </summary>
+        /// <param name="services">The services that the concrete implements..</param>
         /// <param name="lifetime">The lifetime.</param>
         /// <param name="instanceStrategy">The instance strategy.</param>
         public ExternalBuildPlan(IEnumerable<Type> services, Lifetime lifetime, IInstanceStrategy instanceStrategy)
@@ -50,6 +51,9 @@ namespace Griffin.Container.BuildPlans
             return result;
         }
 
+        /// <summary>
+        /// Gets services that the concrete implements.
+        /// </summary>
         public Type[] Services { get; private set; }
 
         /// <summary>

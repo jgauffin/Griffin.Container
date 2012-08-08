@@ -12,7 +12,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="service">The service.</param>
         public ServiceNotRegisteredException(Type service)
-            : base("Failed to resolve " + service.FullName)
+            : base("Failed to resolve '" + service.FullName + "'. Have you registered it in the container? Remember that you should depend on abstractions and not concretes.")
         {
             
         }

@@ -55,6 +55,10 @@ namespace Griffin.Container.BuildPlans
             get { return ConcreteType.FullName; }
         }
 
+        /// <summary>
+        /// Callback invoked each time a new instance is created.
+        /// </summary>
+        /// <param name="callback">Callback to invoke</param>
         public void SetCreateCallback(ICreateCallback callback)
         {
             _createCallback = callback;
@@ -78,7 +82,7 @@ namespace Griffin.Container.BuildPlans
         /// <summary>
         /// Sets the constructor to use
         /// </summary>
-        /// <param name="constructor"></param>
+        /// <param name="constructor">Set the constructor which should be used.</param>
         public virtual void SetConstructor(ConstructorInfo constructor)
         {
             Constructor = constructor;
@@ -160,14 +164,12 @@ namespace Griffin.Container.BuildPlans
         /// <summary>
         /// Creates the actual instance
         /// </summary>
+        /// <param name="context">Context used when requesting the object</param>
         /// <param name="arguments">Constructor arguments</param>
         /// <returns>Created instance.</returns>
         protected virtual object Create(CreateContext context, object[] arguments)
         {
             return  _factoryMethod(arguments);
-            /*return _createCallback != null
-                       ? _createCallback.InstanceCreated(context, instance)
-                       : instance;*/
         }
 
         #region Nested type: InstanceStrategyContext

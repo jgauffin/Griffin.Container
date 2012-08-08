@@ -47,6 +47,7 @@
     <Compile Include="BuildPlans\GenericBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
     <Compile Include="CircularDependenciesException.cs" />
+    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
     <Compile Include="DecoratorContext.cs" />

@@ -1,6 +1,6 @@
 using System;
 
-namespace Griffin.Container.Interception
+namespace Griffin.Container.Interception.Logging
 {
     /// <summary>
     /// Invoked by <see cref="ExceptionLoggerDecorator"/>

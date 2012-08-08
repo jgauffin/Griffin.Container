@@ -22,6 +22,11 @@ namespace Griffin.Container.BuildPlans
         {
         }
 
+        /// <summary>
+        /// Returns null so that the base function can continue.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>TODO: Come up with a better solution</remarks>
         protected override ObjectActivator GetCreateDelegate()
         {
             return null;

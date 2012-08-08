@@ -10,6 +10,7 @@ namespace Griffin.Container
     /// <summary>
     /// Used to register all services which will be created by the container.
     /// </summary>
+    /// <remarks>Uses the <see cref="NonFrameworkClasses"/> when registering concretes without service specification (i.e. <c>RegisterConcrete</c> and <c>RegisterComponents</c>).</remarks>
     public class ContainerRegistrar : IContainerRegistrar
     {
         private readonly List<ComponentRegistration> _registrations = new List<ComponentRegistration>();
