@@ -23,7 +23,11 @@ namespace Griffin.Container.Mvc3
         }
 
         /// <summary>
+<<<<<<< HEAD
+        /// Gets the child container.
+=======
         /// Gets current child container
+>>>>>>> origin/master
         /// </summary>
         protected IChildContainer ChildContainer
         {

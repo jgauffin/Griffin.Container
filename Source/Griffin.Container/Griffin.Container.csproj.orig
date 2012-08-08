@@ -48,6 +48,9 @@
     <Compile Include="BuildPlans\GenericBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
     <Compile Include="CircularDependenciesException.cs" />
+<<<<<<< HEAD
+    <Compile Include="Commands\ICommand.cs" />
+=======
     <Compile Include="Commands\CommandDispatcher.cs" />
     <Compile Include="Commands\CommandExceptionInfo.cs" />
     <Compile Include="Commands\CommandValidationFailedException.cs" />
@@ -60,6 +63,7 @@
     <Compile Include="Commands\IHandlerOf.cs" />
     <Compile Include="Commands\NamespaceDoc.cs" />
     <Compile Include="Commands\ValidationDecorator.cs" />
+>>>>>>> origin/master
     <Compile Include="ComponentAttribute.cs" />
     <Compile Include="ContainerBase.cs" />
     <Compile Include="DecoratorContext.cs" />

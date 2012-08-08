@@ -1,0 +1,24 @@
+<<<<<<< HEAD
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Griffin.Container.Commands
+{
+    class ICommand
+    {
+    }
+}
+=======
+namespace Griffin.Container.Commands
+{
+    /// <summary>
+    /// Interface which should be implemented by commands.
+    /// </summary>
+    public interface ICommand
+    {
+
+    }
+}
+>>>>>>> origin/master

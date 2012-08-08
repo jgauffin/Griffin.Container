@@ -164,7 +164,11 @@ namespace Griffin.Container.BuildPlans
         /// <summary>
         /// Creates the actual instance
         /// </summary>
+<<<<<<< HEAD
+        /// <param name="context">Context used when requesting the object</param>
+=======
         /// <param name="context">Context information used to be able to create the object.</param>
+>>>>>>> origin/master
         /// <param name="arguments">Constructor arguments</param>
         /// <returns>Created instance.</returns>
         protected virtual object Create(CreateContext context, object[] arguments)

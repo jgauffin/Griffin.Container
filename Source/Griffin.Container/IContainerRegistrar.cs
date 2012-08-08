@@ -49,7 +49,7 @@ namespace Griffin.Container
         /// <typeparam name="TConcrete">Type to create</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         /// <remarks>Will be registered as all interfaces &amp; subclasses which is not rejected by the current <see cref="IServiceFilter"/>.</remarks>
-        void RegisterConcrete<TConcrete>(Lifetime lifetime = Lifetime.Scoped) where TConcrete : class;
+        void RegisterConcrete<TConcrete>(Lifetime lifetime) where TConcrete : class;
 
         /// <summary>
         /// Register a type
@@ -57,7 +57,7 @@ namespace Griffin.Container
         /// <typeparam name="TService">Services which is requested from the container.</typeparam>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the returned object</param>
-        void RegisterService<TService>(Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterService<TService>(Func<IServiceLocator, TService> factory, Lifetime lifetime);
 
         /// <summary>
         /// Register a type
@@ -65,7 +65,7 @@ namespace Griffin.Container
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Scoped)
+        void RegisterType<TService, TConcrete>(Lifetime lifetime)
             where TService : class
             where TConcrete : TService;
 
@@ -75,7 +75,7 @@ namespace Griffin.Container
         /// <param name="concrete">Type which will be created</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         /// <remarks>Will be registered as all interfaces &amp; subclasses which is not rejected by the current <see cref="IServiceFilter"/>.</remarks>
-        void RegisterConcrete(Type concrete, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterConcrete(Type concrete, Lifetime lifetime);
 
         /// <summary>
         /// Register a service.
@@ -83,7 +83,7 @@ namespace Griffin.Container
         /// <param name="service">Services which is requested from the container.</param>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        void RegisterService(Type service, Func<IServiceLocator, object> factory, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterService(Type service, Func<IServiceLocator, object> factory, Lifetime lifetime);
 
         /// <summary>
         /// Register a type
@@ -91,7 +91,7 @@ namespace Griffin.Container
         /// <param name="concrete">Class which will be constructed and returned.</param>
         /// <param name="service">Type which will be requested</param>
         /// <param name="lifetime">Lifetime of the object that implements the service</param>
-        void RegisterType(Type service, Type concrete, Lifetime lifetime = Lifetime.Scoped);
+        void RegisterType(Type service, Type concrete, Lifetime lifetime);
 
         /// <summary>
         /// Register an singleton

@@ -20,6 +20,7 @@ namespace Griffin.Container
         /// </summary>
         /// <typeparam name="T">Requested service</typeparam>
         /// <returns>object which implements the service.</returns>
+        /// <exception cref="ServiceNotRegisteredException">The service has not been registered in the container.</exception>
         T Resolve<T>() where T : class;
 
         /// <summary>
@@ -27,6 +28,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="service">Requested service</param>
         /// <returns>object which implements the service</returns>
+        /// <exception cref="ServiceNotRegisteredException">The service has not been registered in the container.</exception>
         object Resolve(Type service);
 
         /// <summary>
