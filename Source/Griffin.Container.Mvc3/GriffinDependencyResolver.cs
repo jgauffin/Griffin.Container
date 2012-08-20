@@ -27,7 +27,18 @@ namespace Griffin.Container.Mvc3
         /// </summary>
         protected IChildContainer ChildContainer
         {
-            get { return _childContainer ?? (_childContainer = _container.CreateChildContainer()); }
+            get
+            {
+
+                return _childContainer ?? (_childContainer = CreateAndStartChildContainer());
+            }
+        }
+
+        private IChildContainer CreateAndStartChildContainer()
+        {
+            var child = _container.CreateChildContainer();
+            child.Resolve<IScopedStartable>().StartScoped();
+            return child;
         }
 
         #region IDependencyResolver Members

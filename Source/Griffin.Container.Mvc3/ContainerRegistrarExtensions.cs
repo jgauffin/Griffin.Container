@@ -19,7 +19,11 @@ namespace Griffin.Container.Mvc3
             var controllerType = typeof (IController);
             foreach (var type in assembly.GetTypes().Where(controllerType.IsAssignableFrom))
             {
-                registrar.RegisterConcrete(type, Lifetime.Scoped);
+                // no public constructors. A base class?
+                if (type.GetConstructors().Length == 0)
+                    continue;
+
+                registrar.RegisterType(type, type, Lifetime.Scoped);
             }
         }
     }

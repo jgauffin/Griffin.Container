@@ -67,6 +67,23 @@ namespace Griffin.Container
             }
         }
 
+        protected virtual IList<IBuildPlan> GetBuildPlans(Type requestedService)
+        {
+            IList<IBuildPlan> buildPlans;
+            if (requestedService.IsGenericType && requestedService.GetGenericTypeDefinition() == typeof(IEnumerable<>) && requestedService.GetGenericArguments().Length == 1)
+            {
+                if (_serviceMappings.TryGetValue(requestedService.GetGenericArguments()[0], out buildPlans))
+                    return buildPlans;
+            }
+            else
+            {
+                if (_serviceMappings.TryGetValue(requestedService, out buildPlans))
+                    return buildPlans;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Validate that all services can be built.
         /// </summary>
@@ -89,12 +106,12 @@ namespace Griffin.Container
 
 
 
-            IList<IBuildPlan> buildPlans;
-            if (!_serviceMappings.TryGetValue(service, out buildPlans))
+            var buildPlans = GetBuildPlans(service);
+            if (buildPlans == null)
                 throw new DependencyNotRegisteredException(breadcrumbs.Last.Value, service);
 
             var cbp = buildPlans.Last() as ConcreteBuildPlan;
-            if(cbp == null)
+            if (cbp == null)
                 return;
 
             breadcrumbs.AddLast(service);
@@ -121,11 +138,33 @@ namespace Griffin.Container
             var parameters = buildPlan.Constructor.GetParameters();
             for (var i = 0; i < parameters.Length; i++)
             {
-                IList<IBuildPlan> bp;
-                if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out bp))
-                    throw new InvalidOperationException(string.Format("Failed to find service {0}.",
-                                                                      parameters[i].ParameterType));
-                buildPlan.AddConstructorPlan(i, bp[0]);
+                var p = parameters[i];
+                IBuildPlan parameterBp;
+
+                if (p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>) && p.ParameterType.GetGenericArguments().Length == 1)
+                {
+                    var serviceType = p.ParameterType.GetGenericArguments()[0];
+
+                    IList<IBuildPlan> bp;
+                    if (!_serviceMappings.TryGetValue(serviceType, out bp))
+                        throw new InvalidOperationException(string.Format("Failed to find service {0}.",
+                                                                          parameters[i].ParameterType));
+
+
+                    parameterBp = new CompositeBuildPlan(serviceType, bp.ToArray());
+                }
+                else
+                {
+
+                    IList<IBuildPlan> bp;
+                    if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out bp))
+                        throw new InvalidOperationException(string.Format("Failed to find service {0}.",
+                                                                          parameters[i].ParameterType));
+
+                    parameterBp = bp[0];
+                }
+
+                buildPlan.AddConstructorPlan(i, parameterBp);
             }
         }
 
@@ -203,22 +242,47 @@ namespace Griffin.Container
             var error = new FailureReasons(concreteType);
             foreach (var constructorInfo in concreteType.GetConstructors().OrderByDescending(x => x.GetParameters().Length))
             {
-                var missing =
-                    constructorInfo.GetParameters().FirstOrDefault(
-                        parameter => !_registrar.Registrations.Any(x => x.Implements(parameter.ParameterType)));
-
+                var missing = FindMissingArgument(constructorInfo);
                 if (missing == null)
                 {
                     constructor = constructorInfo;
                     return null;
                 }
 
-
                 error.Add(new ConstructorFailedReason(constructorInfo, missing.ParameterType));
             }
 
             constructor = null;
             return error;
+        }
+
+        /// <summary>
+        /// Tries to find a constructor argument which can not be resolved.
+        /// </summary>
+        /// <param name="constructorInfo">Constructor to check</param>
+        /// <returns>Missing parameter if any; otherwise <c>null</c>.</returns>
+        /// <remarks>Used to find the first constructor which can be properly resolved and in the same time find the first
+        /// missing argument for each constructor that can't be resolved properly (as a hint to the developer)</remarks>
+        protected virtual ParameterInfo FindMissingArgument(ConstructorInfo constructorInfo)
+        {
+            foreach (var parameterInfo in constructorInfo.GetParameters())
+            {
+                var pType = parameterInfo.ParameterType;
+                if (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(IEnumerable<>) && pType.GetGenericArguments().Length == 1)
+                {
+                    if (!_registrar.Registrations.Any(x => x.Implements(pType.GetGenericArguments()[0])))
+                    {
+                        return parameterInfo;
+                    }
+                }
+                else
+                {
+                    if (!_registrar.Registrations.Any(x => x.Implements(pType)))
+                        return parameterInfo;
+                }
+            }
+
+            return null;
         }
     }
 }

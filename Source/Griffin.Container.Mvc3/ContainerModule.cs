@@ -1,3 +1,4 @@
+using System;
 using System.Web;
 using Griffin.Container.Mvc3;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -19,7 +20,13 @@ namespace Griffin.Container.Mvc3
         /// <param name="context">An <see cref="T:System.Web.HttpApplication"/> that provides access to the methods, properties, and events common to all application objects within an ASP.NET application </param>
         public void Init(HttpApplication context)
         {
+            context.BeginRequest += OnBeginRequest;
             context.EndRequest += (sender, args) => GriffinDependencyResolver.DisposeChildContainer();
+        }
+
+        private void OnBeginRequest(object sender, EventArgs e)
+        {
+            
         }
 
         /// <summary>

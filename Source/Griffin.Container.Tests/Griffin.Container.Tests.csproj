@@ -55,6 +55,7 @@
     <Compile Include="Commands\ValidationDecoratorTests.cs" />
     <Compile Include="DomainEventsTests.cs" />
     <Compile Include="GenericTests.cs" />
+    <Compile Include="IEnumerableConstructorParameterTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MissingDependency.cs" />
     <Compile Include="Subjects\MyContainerModule.cs" />

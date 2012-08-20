@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyUtils.cs" />
+    <Compile Include="BuildPlans\CompositeBuildPlan.cs" />
     <Compile Include="BuildPlans\ConcreteBuildPlan.cs" />
     <Compile Include="BuildPlans\GenericBuildPlan.cs" />
     <Compile Include="ChildContainer.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="IParentContainer.cs" />
     <Compile Include="IScopedStartable.cs" />
     <Compile Include="IServiceMappings.cs" />
+    <Compile Include="ISingletonStartable.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="ServiceMappings.cs" />
     <Compile Include="FailureReasons.cs" />

@@ -13,7 +13,7 @@ namespace Griffin.Container
         /// <param name="concreteType">Type of the concrete.</param>
         /// <param name="missingService">The missing service.</param>
         public DependencyNotRegisteredException(Type concreteType, Type missingService)
-            : base(string.Format("Failed to resolve '{0}' which is required by '{1}'.", concreteType, missingService))
+            : base(string.Format("Failed to resolve '{0}' which is required by '{1}'.", missingService, concreteType))
         {
             ConcreteType = concreteType;
             MissingService = missingService;

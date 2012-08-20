@@ -1,11 +1,11 @@
-namespace Griffin.Container.Tests
+namespace Griffin.Container.Tests.Subjects
 {
     public class Startable1 : ISingletonStartable
     {
         /// <summary>
         /// Invoked when the parent container is created.
         /// </summary>
-        public void StartScoped()
+        public void StartSingleton()
         {
             Started = true;
         }
