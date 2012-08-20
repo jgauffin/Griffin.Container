@@ -1,14 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Griffin.Container.Interception.Logging;
 using Xunit;
 
 namespace Griffin.Container.Interception.Tests
 {
-    public class Class1 : IExceptionLogger
+    public class TwoSimpleAndLameTests : IExceptionLogger
     {
         private Exception _exception;
+
+        #region IExceptionLogger Members
+
+        public void LogException(CallContext context, Exception err)
+        {
+            _exception = err;
+        }
+
+        #endregion
 
         [Fact]
         public void TestDecorateHiearchy()
@@ -45,32 +53,21 @@ namespace Griffin.Container.Interception.Tests
 
             // exception will be logged.
             var tmp = container.Resolve<TotalFailure>();
+            tmp.Fail("Big!");
             Assert.Throws<InvalidOperationException>(() => tmp.Fail("Big!"));
             Assert.IsType<InvalidOperationException>(_exception);
         }
 
-        public class TotalFailure
-        {
-            public virtual void Fail(string value)
-            {
-                throw new InvalidOperationException("Operation not allowed");
-            }
-        }
-
-        public void LogException(CallContext context, Exception err)
-        {
-            _exception = err;
-        }
-
-        public interface IShouldBeDecorated
-        {
-             
-        }
+        #region Nested type: Decorated1
 
         public class Decorated1 : IShouldBeDecorated, IDecorated1
         {
-            
         }
+
+        #endregion
+
+        #region Nested type: Decorated2
+
         public class Decorated2 : IShouldBeDecorated, IDecorated2
         {
             private readonly IDecorated1 _decorated1;
@@ -79,8 +76,12 @@ namespace Griffin.Container.Interception.Tests
             {
                 _decorated1 = decorated1;
             }
-            
         }
+
+        #endregion
+
+        #region Nested type: Decorated3
+
         public class Decorated3 : IShouldBeDecorated, IDecorated3
         {
             private readonly IDecorated2 _decorated2;
@@ -91,16 +92,50 @@ namespace Griffin.Container.Interception.Tests
             }
         }
 
+        #endregion
+
+        #region Nested type: IDecorated1
+
         public interface IDecorated1
         {
         }
+
+        #endregion
+
+        #region Nested type: IDecorated2
+
         public interface IDecorated2
         {
         }
+
+        #endregion
+
+        #region Nested type: IDecorated3
+
         public interface IDecorated3
         {
         }
-        
-    }
 
+        #endregion
+
+        #region Nested type: IShouldBeDecorated
+
+        public interface IShouldBeDecorated
+        {
+        }
+
+        #endregion
+
+        #region Nested type: TotalFailure
+
+        public class TotalFailure
+        {
+            public virtual void Fail(string value)
+            {
+                throw new InvalidOperationException("Operation not allowed");
+            }
+        }
+
+        #endregion
+    }
 }

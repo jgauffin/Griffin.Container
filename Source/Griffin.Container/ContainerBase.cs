@@ -71,7 +71,7 @@ namespace Griffin.Container
                 throw new ServiceNotRegisteredException(service);
             var instance = GetInstance(bps[0], service);
             if (instance == null)
-                throw new InvalidOperationException(string.Format("Failed to construct {0}", service.FullName));
+                throw new InvalidOperationException(string.Format("Failed to construct '{0}'", service.FullName));
 
             return instance;
         }

@@ -7,7 +7,7 @@ using System.Text;
 namespace Griffin.Container.Interception
 {
     /// <summary>
-    /// Decorator pattern using Castle.Proxy.
+    /// Decorator pattern using Castle.Proxy (and it's interception facilities).
     /// </summary>
     /// <remarks>
     /// <para>

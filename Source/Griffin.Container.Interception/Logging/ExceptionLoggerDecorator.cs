@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Castle.DynamicProxy;
 
-namespace Griffin.Container.Interception
+namespace Griffin.Container.Interception.Logging
 {
     /// <summary>
     /// Wraps each method call and log any exceptions using <see cref="IExceptionLogger"/>.
