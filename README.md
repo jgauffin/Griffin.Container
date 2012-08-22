@@ -3,45 +3,30 @@ Griffin.Container
 
 Inversion of control container with (almost) zero configuration.
 
-# Core
+# Features
 
-Features:
-
-* The regular =)
-* [Commands](http://blog.gauffin.org/2012/06/griffin-container-introducing-command-support/)
+* The usual =)
+* Commands
 * Decorators
 * Interceptors
+* Modules
+* Domain events
+* [Quick enough](http://www.palmmedia.de/Blog/2011/8/30/ioc-container-benchmark-performance-comparison)
 
-## Installation
-
-Install using nuget:
-
-`install-package griffin.container`
-
-## Documentation
-
-[MSDN style docs](http://griffinframework.net/docs/container/)
-
-# ASP.NET MVC3
-
-## Installation
+# Installation
 
 Install using nuget:
 
-`install-package griffin.container.mvc3`
+* Core: `install-package griffin.container`
+* MVC3: `install-package griffin.container.mvc3`
+* MVC4: `install-package griffin.container.mvc4`
+* WCF: `install-package griffin.container.wcf`
+* WebApi: `install-package griffin.container.webapi`
 
-## Documentation
+# Documentation
 
-[MSDN style docs](http://griffinframework.net/docs/container/mvc3)
+* The article linked above
+* Core [MSDN style docs](http://griffinframework.net/docs/container/)
+* MVC3 [MSDN style docs](http://griffinframework.net/docs/container/mvc3)
+* WCF [MSDN style docs](http://griffinframework.net/docs/container/wcf)
 
-# WCF
-
-## Installation
-
-Install using nuget:
-
-`install-package griffin.container.wcf`
-
-## Documentation
-
-[MSDN style docs](http://griffinframework.net/docs/container/wcf)

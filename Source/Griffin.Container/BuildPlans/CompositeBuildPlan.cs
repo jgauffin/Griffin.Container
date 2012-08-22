@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Griffin.Container.InstanceStrategies;
 
 namespace Griffin.Container.BuildPlans
@@ -12,9 +10,8 @@ namespace Griffin.Container.BuildPlans
     /// <remarks>Contains two or more build plans which is used for the construction</remarks>
     public class CompositeBuildPlan : IBuildPlan
     {
-        private readonly Type _serviceType;
-        private readonly Lifetime _lifetime;
         private readonly IBuildPlan[] _buildPlans;
+        private readonly Type _serviceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeBuildPlan"/> class.
@@ -24,9 +21,10 @@ namespace Griffin.Container.BuildPlans
         public CompositeBuildPlan(Type serviceType, IBuildPlan[] buildPlans)
         {
             _serviceType = serviceType;
-            _lifetime = Lifetime.Default; //got no lifetime really, since we aren't a real object.
             _buildPlans = buildPlans;
         }
+
+        #region IBuildPlan Members
 
         /// <summary>
         /// Get the instance.
@@ -41,7 +39,7 @@ namespace Griffin.Container.BuildPlans
         /// </remarks>
         public InstanceResult GetInstance(CreateContext context, out object instance)
         {
-            var array = (object[])Array.CreateInstance(_serviceType, _buildPlans.Length);
+            var array = (object[]) Array.CreateInstance(_serviceType, _buildPlans.Length);
             var index = 0;
             foreach (var buildPlan in _buildPlans)
             {
@@ -60,10 +58,7 @@ namespace Griffin.Container.BuildPlans
         /// </summary>
         public Type[] Services
         {
-            get
-            {
-                return new[] { _serviceType };
-            }
+            get { return new[] {_serviceType}; }
         }
 
         /// <summary>
@@ -79,7 +74,21 @@ namespace Griffin.Container.BuildPlans
         /// </summary>
         public string DisplayName
         {
-            get { return _serviceType.ToString(); }
+            get
+            {
+                var value = _serviceType.FullName.Substring(0, _serviceType.FullName.IndexOf('`')) + "<";
+                var genericArgs = _serviceType.GetGenericArguments();
+                var list = new List<string>();
+                for (var i = 0; i < genericArgs.Length; i++)
+                {
+                    value += "{" + i + "},";
+                    list.Add(genericArgs[i].ToString());
+                }
+                value = value.TrimEnd(',');
+                value += ">";
+                value = string.Format(value, list);
+                return value;
+            }
         }
 
         /// <summary>
@@ -94,5 +103,7 @@ namespace Griffin.Container.BuildPlans
                 buildPlan.SetCreateCallback(callback);
             }
         }
+
+        #endregion
     }
 }

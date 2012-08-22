@@ -67,6 +67,11 @@ namespace Griffin.Container
             }
         }
 
+        /// <summary>
+        /// Gets build plans for the requested service
+        /// </summary>
+        /// <param name="requestedService"><![CDATA[IEnumerable<T>]]> to resolve all services or a single service type.</param>
+        /// <returns>Services if found; otherwise <c>null</c>.</returns>
         protected virtual IList<IBuildPlan> GetBuildPlans(Type requestedService)
         {
             IList<IBuildPlan> buildPlans;
