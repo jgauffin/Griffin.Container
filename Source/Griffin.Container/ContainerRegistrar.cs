@@ -13,9 +13,9 @@ namespace Griffin.Container
     /// <remarks>Uses the <see cref="NonFrameworkClasses"/> when registering concretes without service specification (i.e. <c>RegisterConcrete</c> and <c>RegisterComponents</c>).</remarks>
     public class ContainerRegistrar : IContainerRegistrar
     {
+        private readonly Lifetime _defaultLifetime;
         private readonly List<ComponentRegistration> _registrations = new List<ComponentRegistration>();
         private readonly IServiceFilter _serviceFilter;
-        private readonly Lifetime _defaultLifetime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerRegistrar"/> class.
@@ -39,18 +39,39 @@ namespace Griffin.Container
             _serviceFilter = new NonFrameworkClasses();
         }
 
+        #region IContainerRegistrar Members
+
         /// <summary>
-        /// Builds the container directly.
+        /// Register classes using your own custom attribute
         /// </summary>
-        /// <returns>Generated container.</returns>
-        public Container Build()
+        /// <typeparam name="T">Your custom attribute used to identify concretes.</typeparam>
+        /// <param name="assemblies">Assemblies to scan after the attribute</param>
+        public void RegisterUsingAttribute<T>(params Assembly[] assemblies) where T : Attribute, IAttributeRegistrar
         {
-            var builder = new ContainerBuilder();
-            return (Container)builder.Build(this);
+            if (assemblies == null) throw new ArgumentNullException("assemblies");
+
+            foreach (var assembly in assemblies)
+            {
+                FindTypesUsing<T>(assembly, (attr, type) => attr.Register(type, this));
+            }
         }
 
+        /// <summary>
+        /// Register classes using your own custom attribute
+        /// </summary>
+        /// <typeparam name="T">Your custom attribute used to identify concretes.</typeparam>
+        /// <param name="path">File path to load assemblies from.</param>
+        /// <param name="filePattern">File pattern to search for, same as for <see cref="Directory.GetFiles(string,string)"/>.</param>
+        public void RegisterUsingAttribute<T>(string path, string filePattern) where T : Attribute, IAttributeRegistrar
+        {
+            if (path == null) throw new ArgumentNullException("path");
+            if (filePattern == null) throw new ArgumentNullException("filePattern");
 
-        #region IContainerRegistrar Members
+            foreach (var assembly in AssemblyUtils.LoadAssemblies(path, filePattern))
+            {
+                RegisterUsingAttribute<T>(assembly);
+            }
+        }
 
         /// <summary>
         /// Register classes which is decorated with the <see cref="ComponentAttribute"/>
@@ -82,23 +103,15 @@ namespace Griffin.Container
             if (defaultLifetime == Lifetime.Default)
                 defaultLifetime = _defaultLifetime;
 
-            var componentType = typeof (ComponentAttribute);
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (type.IsInterface || type.IsAbstract)
-                        continue;
-
-                    var attr = type.GetCustomAttributes(componentType, true).Cast<ComponentAttribute>().FirstOrDefault();
-                    if (attr == null)
-                        continue;
-
-                    var lifetime = attr.Lifetime == Lifetime.Default
-                                       ? defaultLifetime
-                                       : attr.Lifetime;
-                    RegisterComponent(type, lifetime);
-                }
+                FindTypesUsing<ComponentAttribute>(assembly, (attr, type) =>
+                    {
+                        var lifetime = attr.Lifetime == Lifetime.Default
+                                           ? defaultLifetime
+                                           : attr.Lifetime;
+                        RegisterComponent(type, lifetime);
+                    });
             }
         }
 
@@ -158,7 +171,8 @@ namespace Griffin.Container
         /// <typeparam name="TService">Requested service</typeparam>
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the returned object</param>
-        public void RegisterService<TService>(Func<IServiceLocator, TService> factory, Lifetime lifetime = Lifetime.Default)
+        public void RegisterService<TService>(Func<IServiceLocator, TService> factory,
+                                              Lifetime lifetime = Lifetime.Default)
         {
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
@@ -174,7 +188,7 @@ namespace Griffin.Container
         /// <typeparam name="TService">Type which will be requested</typeparam>
         /// <typeparam name="TConcrete">Object which will be constructed and returned.</typeparam>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
-        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Default) 
+        public void RegisterType<TService, TConcrete>(Lifetime lifetime = Lifetime.Default)
             where TService : class
             where TConcrete : TService
         {
@@ -207,7 +221,7 @@ namespace Griffin.Container
         /// <param name="factory">Delegate used to produce the instance.</param>
         /// <param name="lifetime">Lifetime of the object that implements the service.</param>
         public void RegisterService(Type service, Func<IServiceLocator, object> factory,
-                                 Lifetime lifetime = Lifetime.Default)
+                                    Lifetime lifetime = Lifetime.Default)
         {
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
@@ -265,6 +279,37 @@ namespace Griffin.Container
         }
 
         #endregion
+
+        /// <summary>
+        /// Builds the container directly.
+        /// </summary>
+        /// <returns>Generated container.</returns>
+        public Container Build()
+        {
+            var builder = new ContainerBuilder();
+            return (Container) builder.Build(this);
+        }
+
+        protected virtual void FindTypesUsing<T>(Assembly assembly, Action<T, Type> callback) where T : Attribute
+        {
+            if (assembly == null) throw new ArgumentNullException("assembly");
+            if (callback == null) throw new ArgumentNullException("callback");
+
+            var componentType = typeof (T);
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.IsInterface || type.IsAbstract)
+                    continue;
+
+                var attr = type.GetCustomAttributes(componentType, true).Cast<T>().FirstOrDefault();
+                if (attr == null)
+                    continue;
+
+
+                callback(attr, type);
+            }
+        }
 
         /// <summary>
         /// Register a component

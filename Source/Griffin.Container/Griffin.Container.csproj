@@ -72,6 +72,7 @@
     <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
     <Compile Include="DomainEvents\NamespaceDoc.cs" />
     <Compile Include="BuildPlans\IBuildPlan.cs" />
+    <Compile Include="IAttributeRegistrar.cs" />
     <Compile Include="ICreateCallback.cs" />
     <Compile Include="IInstanceDecorator.cs" />
     <Compile Include="InstanceStrategies\DelegateStrategy.cs" />

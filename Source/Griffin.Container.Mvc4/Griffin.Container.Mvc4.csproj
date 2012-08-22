@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContainerModule.cs" />
+    <Compile Include="HttpModule.cs" />
     <Compile Include="ContainerRegistrarExtensions.cs" />
     <Compile Include="GriffinDependencyResolver.cs" />
     <Compile Include="NamespaceDoc.cs" />

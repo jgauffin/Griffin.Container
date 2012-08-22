@@ -16,6 +16,21 @@ namespace Griffin.Container
         IEnumerable<ComponentRegistration> Registrations { get; }
 
         /// <summary>
+        /// Register classes using your own custom attribute
+        /// </summary>
+        /// <typeparam name="T">Your custom attribute used to identify concretes.</typeparam>
+        /// <param name="assemblies">Assemblies to scan after the attribute</param>
+        void RegisterUsingAttribute<T>(params Assembly[] assemblies) where T : Attribute, IAttributeRegistrar;
+
+        /// <summary>
+        /// Register classes using your own custom attribute
+        /// </summary>
+        /// <typeparam name="T">Your custom attribute used to identify concretes.</typeparam>
+        /// <param name="path">File path to load assemblies from.</param>
+        /// <param name="filePattern">File pattern to search for, same as for <see cref="Directory.GetFiles(string,string)"/>.</param>
+        void RegisterUsingAttribute<T>(string path, string filePattern) where T : Attribute, IAttributeRegistrar;
+
+        /// <summary>
         /// Register classes which is decorated with the <see cref="ComponentAttribute"/>
         /// </summary>
         /// <param name="defaultLifetime">Lifetime to use if not specified in the <see cref="ComponentAttribute"/>.</param>
@@ -106,7 +121,5 @@ namespace Griffin.Container
         /// <param name="service">Type which will be requested</param>
         /// <param name="concrete">Object which will be returned</param>
         void RegisterInstance(Type service, object concrete);
-
-
     }
 }
