@@ -29,7 +29,7 @@ namespace Griffin.Container.WebApi
 
             foreach (var controller in controllers)
             {
-                registrar.RegisterConcrete(controller, Lifetime.Scoped);
+                registrar.RegisterConcrete(controller, Lifetime.Transient);
             }
         }
     }

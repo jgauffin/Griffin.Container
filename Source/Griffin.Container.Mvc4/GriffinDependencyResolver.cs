@@ -37,7 +37,11 @@ namespace Griffin.Container.Mvc4
         private IChildContainer CreateAndStartChildContainer()
         {
             var child = _container.CreateChildContainer();
-            child.Resolve<IScopedStartable>().StartScoped();
+            foreach (var startable in child.ResolveAll<IScopedStartable>())
+            {
+                startable.StartScoped();
+            }
+
             return child;
         }
 

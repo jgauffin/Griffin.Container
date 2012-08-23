@@ -23,7 +23,7 @@ namespace Griffin.Container.Mvc4
                 if (type.GetConstructors().Length == 0)
                     continue;
 
-                registrar.RegisterType(type, type, Lifetime.Scoped);
+                registrar.RegisterType(type, type, Lifetime.Transient);
             }
         }
     }

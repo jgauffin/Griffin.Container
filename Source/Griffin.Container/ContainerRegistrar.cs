@@ -147,6 +147,9 @@ namespace Griffin.Container
             {
                 foreach (var type in assembly.GetTypes().Where(modType.IsAssignableFrom))
                 {
+                    if (type.IsAbstract || type.IsInterface)
+                        continue;
+
                     var module = (IContainerModule) Activator.CreateInstance(type);
                     module.Register(this);
                 }

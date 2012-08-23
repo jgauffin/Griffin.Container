@@ -93,7 +93,13 @@ namespace Griffin.Container.WebApi
         /// <returns></returns>
         public IDependencyScope BeginScope()
         {
-            _currentChild = new Scope(_container.CreateChildContainer(), () => _currentChild = null);
+            var child = _container.CreateChildContainer();
+            _currentChild = new Scope(child, () => _currentChild = null);
+            foreach (var startable in child.ResolveAll<IScopedStartable>())
+            {
+                startable.StartScoped();
+            }
+
             return _currentChild;
         }
 
