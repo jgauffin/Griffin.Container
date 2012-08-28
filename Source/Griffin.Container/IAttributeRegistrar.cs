@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Griffin.Container
 {
     /// <summary>
     /// Let your custom attribute configure the container
     /// </summary>
-    /// <remarks>Used together <see cref="IContainerRegistrar.RegisterUsingAttribute{T}"/>. Your custom attribute should implement this interface.</remarks>
+    /// <remarks>Used together <see cref="IContainerRegistrar.RegisterUsingAttribute{T}(Assembly[])"/>. Your custom attribute should implement this interface.</remarks>
     public interface IAttributeRegistrar
     {
         /// <summary>

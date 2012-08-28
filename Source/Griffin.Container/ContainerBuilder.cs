@@ -109,7 +109,8 @@ namespace Griffin.Container
                     ", when inspecting the constructor of " + breadcrumbs.Last() + ", violating service: " + service,
                     breadcrumbs);
 
-
+            if (service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                return;
 
             var buildPlans = GetBuildPlans(service);
             if (buildPlans == null)
@@ -152,11 +153,14 @@ namespace Griffin.Container
 
                     IList<IBuildPlan> bp;
                     if (!_serviceMappings.TryGetValue(serviceType, out bp))
-                        throw new InvalidOperationException(string.Format("Failed to find service {0}.",
-                                                                          parameters[i].ParameterType));
-
-
-                    parameterBp = new CompositeBuildPlan(serviceType, bp.ToArray());
+                    {
+                        parameterBp = new EmptyListBuildPlan(serviceType);
+                        // empty lists are fine.
+                        //throw new InvalidOperationException(string.Format("Failed to find service {0}.",
+                        //                                                  parameters[i].ParameterType));
+                    }
+                    else
+                        parameterBp = new CompositeBuildPlan(serviceType, bp.ToArray());
                 }
                 else
                 {
@@ -275,10 +279,12 @@ namespace Griffin.Container
                 var pType = parameterInfo.ParameterType;
                 if (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(IEnumerable<>) && pType.GetGenericArguments().Length == 1)
                 {
-                    if (!_registrar.Registrations.Any(x => x.Implements(pType.GetGenericArguments()[0])))
-                    {
-                        return parameterInfo;
-                    }
+                    // empty lists are valid
+                    continue;
+                    //if (!_registrar.Registrations.Any(x => x.Implements(pType.GetGenericArguments()[0])))
+                    //{
+                    //    return parameterInfo;
+                    //}
                 }
                 else
                 {

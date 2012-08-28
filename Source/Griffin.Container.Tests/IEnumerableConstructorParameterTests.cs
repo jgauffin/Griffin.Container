@@ -23,6 +23,33 @@ namespace Griffin.Container.Tests
             Assert.IsAssignableFrom<Subject>(actual);
         }
 
+        [Fact]
+        public void RegisterServiceAsInstance()
+        {
+            var registrar = new ContainerRegistrar(Lifetime.Transient);
+            registrar.RegisterInstance<IThinkNot>(new Will());
+            registrar.RegisterConcrete<InstanceSubject>();
+
+            var c = registrar.Build();
+            var actual = c.Resolve<InstanceSubject>();
+
+            Assert.NotNull(actual);
+            Assert.IsAssignableFrom<InstanceSubject>(actual);
+        }
+
+        [Fact]
+        public void NoRegisteredConcretes()
+        {
+            var registrar = new ContainerRegistrar(Lifetime.Transient);
+            registrar.RegisterConcrete<NoInstancesSubject>();
+
+            var c = registrar.Build();
+            var actual = c.Resolve<NoInstancesSubject>();
+
+            Assert.NotNull(actual);
+            Assert.IsAssignableFrom<NoInstancesSubject>(actual);
+        }
+
         public class Subject
         {
             public Subject(IEnumerable<IThinkNot> classes)
@@ -30,6 +57,23 @@ namespace Griffin.Container.Tests
                 Assert.True(!classes.Any(x=> x == null));
                 Assert.True(classes.Any(x=>x.GetType() == typeof(Will)));
                 Assert.True(classes.Any(x => x.GetType() == typeof(Wont)));
+            }
+        }
+
+        public class InstanceSubject
+        {
+            public InstanceSubject(IEnumerable<IThinkNot> classes)
+            {
+                Assert.True(!classes.Any(x => x == null));
+                Assert.True(classes.Any(x => x.GetType() == typeof(Will)));
+            }
+        }
+
+        public class NoInstancesSubject
+        {
+            public NoInstancesSubject(IEnumerable<IThinkNot> classes)
+            {
+                Assert.False(classes.Any());
             }
         }
 

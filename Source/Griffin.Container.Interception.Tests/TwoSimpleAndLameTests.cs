@@ -53,7 +53,6 @@ namespace Griffin.Container.Interception.Tests
 
             // exception will be logged.
             var tmp = container.Resolve<TotalFailure>();
-            tmp.Fail("Big!");
             Assert.Throws<InvalidOperationException>(() => tmp.Fail("Big!"));
             Assert.IsType<InvalidOperationException>(_exception);
         }

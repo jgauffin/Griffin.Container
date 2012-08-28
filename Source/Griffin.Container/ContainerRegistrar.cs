@@ -293,6 +293,12 @@ namespace Griffin.Container
             return (Container) builder.Build(this);
         }
 
+        /// <summary>
+        /// Finds the types using.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assembly">The assembly.</param>
+        /// <param name="callback">The callback.</param>
         protected virtual void FindTypesUsing<T>(Assembly assembly, Action<T, Type> callback) where T : Attribute
         {
             if (assembly == null) throw new ArgumentNullException("assembly");
