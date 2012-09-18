@@ -3,20 +3,16 @@
 namespace Griffin.Container.Mvc4
 {
     /// <summary>
-    /// ASP.NET MVC4 integration package Griffin.Container.
+    /// ASP.NET MVC4 integration package for Griffin.Container.
     /// </summary>
     /// <remarks>
-    /// 
+    /// <para>
+    /// This package contains both MVC4 and WebApi implementations.
+    /// </para>
+    /// <para>
+    /// Usage: Add <c>GriffinContainerConfig.Setup()</c> in your global.asax. Then go to <c>App_Start\GriffinContainerConfig.cs</c> to configure the container.
+    /// </para>
     /// </remarks>
-    /// <example>
-    /// <code>
-    /// // Register all controllers in the current assembly
-    /// registrar.RegisterControllers(Assembly.GetExecutingAssembly());
-    /// 
-    /// // You also need to tell ASP.NET MVC4 to use Griffin.Container like this:
-    /// DependencyResolver.SetResolver(new GriffinDependencyResolver(container));
-    /// </code>
-    /// </example>
     [CompilerGenerated]
     internal class NamespaceDoc
     {

@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,11 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GriffinWebApiDependencyResolver.cs" />
     <Compile Include="HttpModule.cs" />
     <Compile Include="ContainerRegistrarExtensions.cs" />
     <Compile Include="GriffinDependencyResolver.cs" />
+    <Compile Include="IDependencyScopeTracker.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scope.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Griffin.Container\Griffin.Container.csproj">

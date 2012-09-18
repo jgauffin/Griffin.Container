@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34C2AC
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.WebApi", "Griffin.Container.WebApi\Griffin.Container.WebApi.csproj", "{912C0358-DB84-430F-A270-68963F2D1E44}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Mvc4", "Griffin.Container.Mvc4\Griffin.Container.Mvc4.csproj", "{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}"
 EndProject
 Global
@@ -53,10 +51,6 @@ Global
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{912C0358-DB84-430F-A270-68963F2D1E44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{912C0358-DB84-430F-A270-68963F2D1E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{912C0358-DB84-430F-A270-68963F2D1E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{912C0358-DB84-430F-A270-68963F2D1E44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Release|Any CPU.ActiveCfg = Release|Any CPU

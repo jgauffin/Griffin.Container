@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Http.Dependencies;
 
-namespace Griffin.Container.WebApi
+namespace Griffin.Container.Mvc4
 {
     /// <summary>
     /// Our dependency scope implementation
