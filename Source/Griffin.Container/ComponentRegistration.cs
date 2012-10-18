@@ -96,6 +96,11 @@ namespace Griffin.Container
 
             if (!Services.Any())
                 AddService(ConcreteType);
+
+            // Allow non standard filters do decide whether we should get registered
+            // as concrete
+            else if (!(serviceFilter is NonFrameworkClasses) && serviceFilter.CanRegisterAs(ConcreteType))
+                AddService(ConcreteType);
         }
     }
 }

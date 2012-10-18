@@ -6,8 +6,9 @@ using System.Text;
 namespace Griffin.Container.DomainEvents
 {
     /// <summary>
-    /// Small domain event implementation which uses the inverson of control container for the events.
+    /// The domain event handling have been superceeded by Griffin.Decoupled. Find it at github.
     /// </summary>
+    /// <remarks>Small domain event implementation which uses the inverson of control container for the events.</remarks>
     /// <example>
     /// <code>
     /// public class UserService

@@ -9,6 +9,7 @@ namespace Griffin.Container.DomainEvents
     /// Used to subscribe on domain events
     /// </summary>
     /// <typeparam name="T">Type of event</typeparam>
+    [Obsolete("Use Griffin.Decoupled: http://github.com/jgauffin/griffin.decoupled")]
     public interface ISubscriberOf<in T> where T : class
     {
         /// <summary>

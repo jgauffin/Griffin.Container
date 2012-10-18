@@ -50,13 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CircularDependenciesTests.cs" />
-    <Compile Include="Commands\ContainerDispatcherTests.cs" />
-    <Compile Include="Commands\DecoratorTests.cs" />
-    <Compile Include="Commands\ValidationDecoratorTests.cs" />
     <Compile Include="CustomAttribute\ContainerServiceAttribute.cs" />
     <Compile Include="CustomAttribute\SomeService.cs" />
     <Compile Include="CustomAttribute\CustomAttributeTests.cs" />
-    <Compile Include="DomainEventsTests.cs" />
     <Compile Include="GenericTests.cs" />
     <Compile Include="IEnumerableConstructorParameterTests.cs" />
     <Compile Include="IntegrationTests.cs" />

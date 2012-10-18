@@ -10,6 +10,7 @@ namespace Griffin.Container.Commands
     /// </summary>
     /// <remarks>You need to assign a handler using the <see cref="Assign"/> method. Then use <see cref="Dispatch"/> to send the commands.
     /// There is no guarantee when a command is processed. Do not expect a response.</remarks>
+    [Obsolete("Use Griffin.Decoupled: http://github.com/jgauffin/griffin.decoupled")]
     public class CommandDispatcher
     {
         private static ICommandDispatcher _instance;

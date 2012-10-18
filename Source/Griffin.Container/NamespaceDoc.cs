@@ -15,6 +15,24 @@ namespace Griffin.Container
     /// </list>
     /// </para>
     /// </remarks>
+    /// <example>
+    /// Easy way is to start by decorating all services with the <c>[Component]</c> attribute:
+    /// <code>
+    /// [Component]
+    /// public class MyService : IAmService
+    /// {
+    /// }
+    /// </code>
+    /// and then build the container:
+    /// <code>
+    /// var registrar = new ContainerRegistrar();
+    /// registrar.RegisterComponents(Lifetime.Scoped, Assembly.GetExecutingAssembly());
+    /// 
+    /// var container = registrar.Build();
+    /// 
+    /// // and then integrate it with your favorite framework..
+    /// </code>
+    /// </example>
     [CompilerGenerated]
     internal class NamespaceDoc
     {

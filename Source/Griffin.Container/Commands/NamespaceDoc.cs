@@ -7,7 +7,7 @@ using System.Text;
 namespace Griffin.Container.Commands
 {
     /// <summary>
-    /// Command handling
+    /// The command handling have been superceeded by Griffin.Decoupled. Find it at github.
     /// </summary>
     /// <remarks>Commands should be treated as asynchronous, even if the default implementation is synchronous. That
     /// means that the commands should not return any values. You already got all information and should treat every

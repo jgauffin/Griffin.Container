@@ -1,8 +1,11 @@
+using System;
+
 namespace Griffin.Container.Commands
 {
     /// <summary>
     /// Contract for the dispatcher implementation.
     /// </summary>
+    [Obsolete("Use Griffin.Decoupled: http://github.com/jgauffin/griffin.decoupled")]
     public interface ICommandDispatcher
     {
         /// <summary>

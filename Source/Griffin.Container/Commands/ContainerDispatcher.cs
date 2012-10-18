@@ -43,6 +43,7 @@ namespace Griffin.Container.Commands
     /// }
     /// </code>
     /// </example>
+    [Obsolete("Use Griffin.Decoupled: http://github.com/jgauffin/griffin.decoupled")]
     public class ContainerDispatcher : ICommandDispatcher
     {
         private readonly IServiceLocator _serviceLocator;
