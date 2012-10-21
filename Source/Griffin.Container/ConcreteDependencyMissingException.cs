@@ -13,7 +13,7 @@ namespace Griffin.Container
         /// <param name="concreteType">Type of the concrete which could not be built.</param>
         /// <param name="error">The error.</param>
         public ConcreteDependencyMissingException(Type concreteType, FailureReasons error)
-            : base(string.Format("Failed to lookup '{0}'.", concreteType.FullName))
+            : base(string.Format("Failed to create '{0}'.", concreteType.FullName))
         {
             ConcreteBeingBuilt = concreteType;
             Reasons = error;

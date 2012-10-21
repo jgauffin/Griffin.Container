@@ -86,7 +86,7 @@ namespace Griffin.Container.InstanceStrategies
         protected InstanceResult GetScoped(IInstanceStrategyContext context, out object instance)
         {
             if (context.CreateContext.ScopedStorage == null)
-                throw new NotSupportedException("Scoped registrations need a scoped container.");
+                throw new NotSupportedException("Scoped registrations need a scoped container. Requested service: " + context.BuildPlan.DisplayName);
 
             instance = context.CreateContext.ScopedStorage.Retreive(context.BuildPlan);
             if (instance != null)
