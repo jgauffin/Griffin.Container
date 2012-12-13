@@ -29,4 +29,4 @@ Install using nuget:
 * Core [MSDN style docs](http://griffinframework.net/docs/container/)
 * MVC3 [MSDN style docs](http://griffinframework.net/docs/container/mvc3)
 * WCF [MSDN style docs](http://griffinframework.net/docs/container/wcf)
-
+* [Forum/Mailing list](https://groups.google.com/forum/#!forum/griffin-container)
