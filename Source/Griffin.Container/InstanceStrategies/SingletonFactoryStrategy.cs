@@ -18,13 +18,13 @@ namespace Griffin.Container.InstanceStrategies
         /// </returns>
         public InstanceResult GetInstance(IInstanceStrategyContext context, out object instance)
         {
-            instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+            instance = context.CreateContext.SingletonStorage.Retrieve(context.BuildPlan);
             if (instance != null)
                 return InstanceResult.Loaded;
 
             lock (context.CreateContext.SingletonStorage)
             {
-                instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+                instance = context.CreateContext.SingletonStorage.Retrieve(context.BuildPlan);
                 if (instance != null)
                     return InstanceResult.Loaded;
 

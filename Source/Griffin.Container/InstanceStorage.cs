@@ -13,7 +13,7 @@ namespace Griffin.Container
         #region IInstanceStorage Members
 
         /// <summary>
-        /// Store a new isntance
+        /// Store a new instance
         /// </summary>
         /// <param name="key">Key identifying the instance</param>
         /// <param name="instance">Instance to store</param>
@@ -27,7 +27,7 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="key">Key identifying the instance</param>
         /// <returns>instance if found; otherwise null.</returns>
-        public object Retreive(object key)
+        public object Retrieve(object key)
         {
             object value;
             return _items.TryGetValue(key, out value) ? value : null;
@@ -41,6 +41,10 @@ namespace Griffin.Container
         {
             foreach (var value in _items.Values)
             {
+                //do not implicitly dispose containers.
+                if (value is IChildContainer || value is ContainerBase)
+                    continue;
+
                 var disposable = value as IDisposable;
                 if (disposable != null)
                     disposable.Dispose();

@@ -35,7 +35,7 @@ namespace Griffin.Container.InstanceStrategies
                 throw new InvalidOperationException("Class '" + _concrete.FullName +
                                                     "' is a scoped concrete and can therefore not be created from the parent container. Classes which has been specified as scoped will most likely break if resolved and stored in the singleton scope. Use 'container.CreateChildContainer()' to create a scope.");
 
-            instance = context.CreateContext.ScopedStorage.Retreive(context.BuildPlan);
+            instance = context.CreateContext.ScopedStorage.Retrieve(context.BuildPlan);
             if (instance != null)
                 return InstanceResult.Loaded;
 

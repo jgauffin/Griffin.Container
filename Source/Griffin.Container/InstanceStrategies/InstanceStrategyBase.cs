@@ -68,7 +68,7 @@ namespace Griffin.Container.InstanceStrategies
         /// <returns></returns>
         protected InstanceResult GetSingleton(IInstanceStrategyContext context, out object instance)
         {
-            instance = context.CreateContext.SingletonStorage.Retreive(context.BuildPlan);
+            instance = context.CreateContext.SingletonStorage.Retrieve(context.BuildPlan);
             if (instance != null)
                 return InstanceResult.Loaded;
 
@@ -88,7 +88,7 @@ namespace Griffin.Container.InstanceStrategies
             if (context.CreateContext.ScopedStorage == null)
                 throw new NotSupportedException("Scoped registrations need a scoped container. Requested service: " + context.BuildPlan.DisplayName);
 
-            instance = context.CreateContext.ScopedStorage.Retreive(context.BuildPlan);
+            instance = context.CreateContext.ScopedStorage.Retrieve(context.BuildPlan);
             if (instance != null)
                 return InstanceResult.Loaded;
 

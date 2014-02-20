@@ -19,6 +19,6 @@ namespace Griffin.Container
         /// </summary>
         /// <param name="key">Key identifying the instance</param>
         /// <returns>instance if found; otherwise null.</returns>
-        object Retreive(object key);
+        object Retrieve(object key);
     }
 }
