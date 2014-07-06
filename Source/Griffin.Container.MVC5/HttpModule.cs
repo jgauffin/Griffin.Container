@@ -12,6 +12,8 @@ namespace Griffin.Container.Mvc5
     /// </summary>
     public class ContainerModule : IHttpModule
     {
+        private static bool _registered = false;
+
         #region IHttpModule Members
 
         /// <summary>
@@ -43,6 +45,9 @@ namespace Griffin.Container.Mvc5
         /// </summary>
         public static void Register()
         {
+            if (_registered)
+                return;
+            _registered = true;
             DynamicModuleUtility.RegisterModule(typeof (ContainerModule));
         }
     }

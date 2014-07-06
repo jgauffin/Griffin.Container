@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Griffin.Container.Mvc5
@@ -9,7 +10,6 @@ namespace Griffin.Container.Mvc5
     /// </summary>
     public class GriffinDependencyResolver : IDependencyResolver
     {
-        [ThreadStatic] private static IChildContainer _childContainer;
         private readonly IParentContainer _container;
 
         /// <summary>
@@ -29,8 +29,13 @@ namespace Griffin.Container.Mvc5
         {
             get
             {
-
-                return _childContainer ?? (_childContainer = CreateAndStartChildContainer());
+                var container = (IChildContainer)HttpContext.Current.Items["GriffinDependencyResolverChild"];
+                if (container == null)
+                {
+                    container = CreateAndStartChildContainer();
+                    HttpContext.Current.Items["GriffinDependencyResolverChild"] = container;
+                }
+                return container;
             }
         }
 
@@ -78,11 +83,12 @@ namespace Griffin.Container.Mvc5
         /// </summary>
         public static void DisposeChildContainer()
         {
-            if (_childContainer == null)
-                return;
-
-            _childContainer.Dispose();
-            _childContainer = null;
+            var container = (IChildContainer)HttpContext.Current.Items["GriffinDependencyResolverChild"];
+            if (container != null)
+            {
+                container.Dispose();
+                HttpContext.Current.Items["GriffinDependencyResolverChild"] = null;
+            }
         }
     }
 }

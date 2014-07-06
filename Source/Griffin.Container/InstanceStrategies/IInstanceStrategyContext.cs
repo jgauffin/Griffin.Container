@@ -3,7 +3,7 @@ using Griffin.Container.BuildPlans;
 namespace Griffin.Container.InstanceStrategies
 {
     /// <summary>
-    /// Context used when determin if a new instance should be created or not.
+    /// Context used when determine if a new instance should be created or not.
     /// </summary>
     public interface IInstanceStrategyContext
     {

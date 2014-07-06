@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Griffin.Container.Tests.Subjects;
+using NSubstitute;
 using Xunit;
 
 namespace Griffin.Container.Tests
@@ -93,6 +94,32 @@ namespace Griffin.Container.Tests
             }
 
             Assert.True(instance.IsDisposed);
+        }
+
+        [Fact]
+        public void TwoChildContainers()
+        {
+            var registrar = new ContainerRegistrar();
+            registrar.RegisterConcrete<MySelf>();
+            var builder = new ContainerBuilder();
+            var container = builder.Build(registrar);
+
+            MySelf instance1, instance2;
+            var childContainer1 = container.CreateChildContainer();
+            var childContainer2 = container.CreateChildContainer();
+            instance1 = childContainer1.Resolve<MySelf>();
+            instance2 = childContainer2.Resolve<MySelf>();
+            Assert.False(instance1.IsDisposed);
+            Assert.False(instance2.IsDisposed);
+
+            childContainer1.Dispose();
+
+            Assert.True(instance1.IsDisposed);
+            Assert.False(instance2.IsDisposed);
+            
+            childContainer2.Dispose();
+
+            Assert.True(instance2.IsDisposed);
         }
 
         [Fact]

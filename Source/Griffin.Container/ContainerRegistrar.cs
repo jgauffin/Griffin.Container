@@ -110,7 +110,7 @@ namespace Griffin.Container
                         var lifetime = attr.Lifetime == Lifetime.Default
                                            ? defaultLifetime
                                            : attr.Lifetime;
-                        RegisterComponent(type, lifetime);
+                        RegisterComponent(type, lifetime, attr.RegisterAsSelf);
                     });
             }
         }
@@ -327,13 +327,27 @@ namespace Griffin.Container
         /// <param name="lifetime">Lifetime to use</param>
         protected virtual void RegisterComponent(Type concreteType, Lifetime lifetime)
         {
+            RegisterComponent(concreteType, lifetime, false);
+        }
+
+        /// <summary>
+        /// Register a component
+        /// </summary>
+        /// <param name="concreteType">Class to create</param>
+        /// <param name="lifetime">Lifetime to use</param>
+        /// <param name="registerAsSelf">Register container as self (so that the class type can be used for lookups)</param>
+        protected virtual void RegisterComponent(Type concreteType, Lifetime lifetime, bool registerAsSelf)
+        {
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
 
             var registration = CreateRegistration(concreteType, lifetime);
             registration.AddServices(_serviceFilter);
+            if( registerAsSelf)
+                registration.AddService(concreteType);
             Add(registration);
         }
+
 
         /// <summary>
         /// Add another registration.

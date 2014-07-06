@@ -14,5 +14,11 @@ namespace Griffin.Container
         /// Gets or sets lifetime
         /// </summary>
         public Lifetime Lifetime { get; set; }
+
+        /// <summary>
+        /// Register class as itself.
+        /// </summary>
+        public bool RegisterAsSelf { get; set; }
+
     }
 }
