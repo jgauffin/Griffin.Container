@@ -3,6 +3,10 @@ Griffin.Container
 
 Inversion of control container with (almost) zero configuration.
 
+*2015-03-15 This project is not dead, I've just not needed any bug fixes or new features.*
+
+Pull requests are welcome.
+
 # Features
 
 * The usual =)
