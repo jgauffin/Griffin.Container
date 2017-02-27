@@ -356,6 +356,29 @@ namespace Griffin.Container
         protected virtual void Add(ComponentRegistration registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
+            var original = _registrations.FirstOrDefault(x => x.ConcreteType == registration.ConcreteType);
+            if (original != null)
+            {
+                if (original.Lifetime != registration.Lifetime)
+                {
+                    throw new NotSupportedException(
+                        $"Concrete \'{registration.ConcreteType}\' has already been registered with lifetime \'{original.Lifetime}\', this time the lifetime was specified as \'{registration.Lifetime}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
+                }
+                if (registration.InstanceStrategy != original.InstanceStrategy &&
+                    registration.InstanceStrategy != null)
+                {
+                    throw new NotSupportedException(
+                        $"Concrete \'{registration.ConcreteType}\' has already been registered with scope type \'{original.InstanceStrategy}\', this time the scope type was specified as \'{registration.InstanceStrategy}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
+                }
+                foreach (var service in registration.Services)
+                {
+                    if (original.Services.All(x => x != service))
+                        registration.AddService(service);
+                }
+                
+                return;
+            }
+
             _registrations.Add(registration);
         }
 

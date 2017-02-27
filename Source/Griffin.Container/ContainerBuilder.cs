@@ -219,6 +219,10 @@ namespace Griffin.Container
                         throw new ConcreteDependencyMissingException(registration.ConcreteType, error);
 
                     buildPlan.SetConstructor(constructor);
+                    if (_buildPlans.ContainsKey(registration.ConcreteType))
+                        throw new InvalidOperationException(
+                            $"Concrete \'{registration.ConcreteType}\' has already been registered.");
+
                     _buildPlans.Add(registration.ConcreteType, buildPlan);
                 }
                 else
