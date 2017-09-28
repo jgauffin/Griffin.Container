@@ -3,12 +3,51 @@ Griffin.Container
 
 Inversion of control container with (almost) zero configuration.
 
-Pull requests are welcome.
+The container configuration is validated when the container is built, to make sure that all dependencies have been registered.
+
+Support for .NET Standard 2.0 and .NET 4.5.2.
+
+# Typical setup:
+
+1. Add the `[Component]` attribute on your classes:
+
+```csharp
+[Component]
+public class MyService : IShoppingService
+{
+    public MyService(IShoppingRepository repos)
+	{
+	}
+	
+	// [...]
+}
+
+[Component]
+public class SqlServerShoppingRepository : IShoppingRepository
+{
+    public SqlServerShoppingRepository()
+	{
+	}
+	
+	// [...]
+}
+```
+
+2. Register all decorated classes in the container:
+
+```csharp
+var registrar = new ContainerRegistrar();
+registrar.RegisterComponents(Lifetime.Scoped, Assembly.GetExecutingAssembly());
+
+var container = registrar.Build();
+```
+
+
 
 # Features
 
 * The usual =)
-* Configuration validation - Do not run into troubles just because your container is a loose cannon.
+* Configuration validation
 * Commands
 * Decorators
 * Interceptors
@@ -21,15 +60,15 @@ Pull requests are welcome.
 Install using nuget:
 
 * Core: `install-package griffin.container`
-* MVC3: `install-package griffin.container.mvc3`
-* MVC4: `install-package griffin.container.mvc4`
+* MVC5: `install-package griffin.container.mvc5`
 * WCF: `install-package griffin.container.wcf`
-* WebApi: `install-package griffin.container.webapi`
+* WebApi v2: `install-package griffin.container.webapi2`
 
 # Documentation
 
 * The article linked above
 * Core [MSDN style docs](http://griffinframework.net/docs/container/)
-* MVC3 [MSDN style docs](http://griffinframework.net/docs/container/mvc3)
 * WCF [MSDN style docs](http://griffinframework.net/docs/container/wcf)
 * [Forum/Mailing list](https://groups.google.com/forum/#!forum/griffin-container)
+
+Pull requests are welcome.
