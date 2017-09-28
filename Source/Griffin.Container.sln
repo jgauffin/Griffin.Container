@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container", "Griffin.Container\Griffin.Container.csproj", "{F483D7E5-BE37-465D-A27D-E6A383B9FF08}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Griffin.Container", "Griffin.Container\Griffin.Container.csproj", "{F483D7E5-BE37-465D-A27D-E6A383B9FF08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Tests", "Griffin.Container.Tests\Griffin.Container.Tests.csproj", "{AF10943C-283E-49A1-A484-146717A6DFA7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Mvc3", "Griffin.Container.Mvc3\Griffin.Container.Mvc3.csproj", "{5791206F-9FDC-40B5-BC22-E2091FAAF72D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Wcf", "Griffin.Container.Wcf\Griffin.Container.Wcf.csproj", "{27140D81-DA6B-48F5-9407-A08832560A9C}"
 EndProject
@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{34C2AC
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Mvc4", "Griffin.Container.Mvc4\Griffin.Container.Mvc4.csproj", "{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Container.Mvc5", "Griffin.Container.MVC5\Griffin.Container.Mvc5.csproj", "{AE32D547-4FA7-4934-B6FD-2F14707A2595}"
 EndProject
@@ -39,10 +37,6 @@ Global
 		{AF10943C-283E-49A1-A484-146717A6DFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF10943C-283E-49A1-A484-146717A6DFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF10943C-283E-49A1-A484-146717A6DFA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5791206F-9FDC-40B5-BC22-E2091FAAF72D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5791206F-9FDC-40B5-BC22-E2091FAAF72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5791206F-9FDC-40B5-BC22-E2091FAAF72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5791206F-9FDC-40B5-BC22-E2091FAAF72D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27140D81-DA6B-48F5-9407-A08832560A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,10 +49,6 @@ Global
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753B0BC0-E508-412D-8495-BA8B05B6CA74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE1D01D3-4BF6-47D4-BE53-94D7036F47AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE32D547-4FA7-4934-B6FD-2F14707A2595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE32D547-4FA7-4934-B6FD-2F14707A2595}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE32D547-4FA7-4934-B6FD-2F14707A2595}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,5 +60,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19D89883-A829-4342-B342-ADC5E620928F}
 	EndGlobalSection
 EndGlobal

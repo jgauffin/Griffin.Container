@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace Griffin.Container.Commands
 {
@@ -72,8 +73,14 @@ namespace Griffin.Container.Commands
             var handler = _serviceLocator.Resolve(handlerType);
             var decorated = Decorate(command.GetType(), handler);
 
-            // workaround so that TargetInvocationException is not thrown.
-            ((dynamic) decorated).Invoke((dynamic)command);
+            try
+            {
+                method.Invoke(decorated, new object[] {command});
+            }
+            catch(TargetInvocationException ex)
+            {
+                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            }
         }
 
         /// <summary>

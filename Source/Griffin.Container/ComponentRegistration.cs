@@ -6,7 +6,7 @@ using Griffin.Container.InstanceStrategies;
 namespace Griffin.Container
 {
     /// <summary>
-    /// Information about a specific component
+    /// Information about a specific concrete (which implements one or more services).
     /// </summary>
     /// <remarks>Used to create the build plan</remarks>
     public class ComponentRegistration
@@ -32,12 +32,12 @@ namespace Griffin.Container
         public Type ConcreteType { get; private set; }
 
         /// <summary>
-        /// Gets or sets strategy used to handle the instance
+        /// Gets or sets strategy used to handle the instance (build plan)
         /// </summary>
         public IInstanceStrategy InstanceStrategy { get; set; }
 
         /// <summary>
-        /// Gets services.
+        /// Gets services that the class implements
         /// </summary>
         public IEnumerable<Type> Services
         {

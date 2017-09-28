@@ -1,130 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F483D7E5-BE37-465D-A27D-E6A383B9FF08}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Griffin.Container</RootNamespace>
-    <AssemblyName>Griffin.Container</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <Version>1.1.5</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <DocumentationFile>bin\$(Configuration)\netstandard2.0\Griffin.Container.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Griffin.Container.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Griffin.Container.XML</DocumentationFile>
+  <PropertyGroup>
+    <PackageId>Griffin.Container</PackageId>
+    <Authors>jgauffin</Authors>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Easy to understand but powerful container.</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>.NET Standard support</PackageReleaseNotes>
+    <Copyright>Copyright 2017 © Jonas Gauffin. All rights reserved.</Copyright>
+    <PackageTags>inversion-of-control dependency-injection netstandard</PackageTags>
+    <RepositoryUrl>https://github.com/jgauffin/griffin.container</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/jgauffin/griffin.container</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyUtils.cs" />
-    <Compile Include="BuildPlans\CompositeBuildPlan.cs" />
-    <Compile Include="BuildPlans\ConcreteBuildPlan.cs" />
-    <Compile Include="BuildPlans\EmptyListBuildPlan.cs" />
-    <Compile Include="BuildPlans\GenericBuildPlan.cs" />
-    <Compile Include="ChildContainer.cs" />
-    <Compile Include="CircularDependenciesException.cs" />
-    <Compile Include="Commands\CommandDispatcher.cs" />
-    <Compile Include="Commands\CommandExceptionInfo.cs" />
-    <Compile Include="Commands\CommandValidationFailedException.cs" />
-    <Compile Include="Commands\ExceptionDecorator.cs" />
-    <Compile Include="Commands\ContainerDispatcher.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\ICommandDispatcher.cs" />
-    <Compile Include="Commands\IDecoratorFactory.cs" />
-    <Compile Include="Commands\IExceptionLogger.cs" />
-    <Compile Include="Commands\IHandlerOf.cs" />
-    <Compile Include="Commands\NamespaceDoc.cs" />
-    <Compile Include="Commands\ValidationDecorator.cs" />
-    <Compile Include="ComponentAttribute.cs" />
-    <Compile Include="ContainerBase.cs" />
-    <Compile Include="DecoratorContext.cs" />
-    <Compile Include="DependencyNotRegisteredException.cs" />
-    <Compile Include="BuildPlans\ExternalBuildPlan.cs" />
-    <Compile Include="CreateContext.cs" />
-    <Compile Include="DefaultInstanceStorageFactory.cs" />
-    <Compile Include="DomainEvents\DomainEvent.cs" />
-    <Compile Include="DomainEvents\IAutoSubscriberOf.cs" />
-    <Compile Include="DomainEvents\NamespaceDoc.cs" />
-    <Compile Include="BuildPlans\IBuildPlan.cs" />
-    <Compile Include="IAttributeRegistrar.cs" />
-    <Compile Include="ICreateCallback.cs" />
-    <Compile Include="IInstanceDecorator.cs" />
-    <Compile Include="InstanceStrategies\DelegateStrategy.cs" />
-    <Compile Include="InstanceStrategies\ExistingInstanceStrategy.cs" />
-    <Compile Include="InstanceStrategies\IInstanceStrategy.cs" />
-    <Compile Include="InstanceStrategies\IInstanceStrategyContext.cs" />
-    <Compile Include="InstanceStrategies\InstanceResult.cs" />
-    <Compile Include="InstanceStrategies\InstanceStrategyBase.cs" />
-    <Compile Include="InstanceStrategies\NamespaceDoc.cs" />
-    <Compile Include="InstanceStrategies\ScopedInstanceStrategy.cs" />
-    <Compile Include="InstanceStrategies\SingletonFactoryStrategy.cs" />
-    <Compile Include="InstanceStrategies\TransientInstanceStrategy.cs" />
-    <Compile Include="IContainerModule.cs" />
-    <Compile Include="IInstanceStorageFactory.cs" />
-    <Compile Include="InstanceFactory2.cs" />
-    <Compile Include="IParentContainer.cs" />
-    <Compile Include="IScopedStartable.cs" />
-    <Compile Include="IServiceMappings.cs" />
-    <Compile Include="ISingletonStartable.cs" />
-    <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="ServiceMappings.cs" />
-    <Compile Include="FailureReasons.cs" />
-    <Compile Include="ComponentRegistration.cs" />
-    <Compile Include="ConstructorFailedReason.cs" />
-    <Compile Include="Container.cs" />
-    <Compile Include="ContainerBuilder.cs" />
-    <Compile Include="ContainerRegistrar.cs" />
-    <Compile Include="IChildContainer.cs" />
-    <Compile Include="IContainerBuilder.cs" />
-    <Compile Include="IContainerRegistrar.cs" />
-    <Compile Include="IInstanceStorage.cs" />
-    <Compile Include="InstanceStorage.cs" />
-    <Compile Include="IServiceFilter.cs" />
-    <Compile Include="IServiceLocator.cs" />
-    <Compile Include="Lifetime.cs" />
-    <Compile Include="NonFrameworkClasses.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceNotRegisteredException.cs" />
-    <Compile Include="TypeExtensionMethods.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="ConcreteDependencyMissingException.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Registration\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
