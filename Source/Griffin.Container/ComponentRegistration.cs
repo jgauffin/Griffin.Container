@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Griffin.Container.InstanceStrategies;
 
@@ -18,16 +19,18 @@ namespace Griffin.Container
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
         /// </summary>
-        /// <param name="concreteType">Type to create.</param>
+        /// <param name="concreteType">Type to create, , NULL for services that use factory methods</param>
         /// <param name="lifetime">The lifetime.</param>
         public ComponentRegistration(Type concreteType, Lifetime lifetime)
         {
+            if (!Enum.IsDefined(typeof(Lifetime), lifetime))
+                throw new InvalidEnumArgumentException(nameof(lifetime), (int) lifetime, typeof(Lifetime));
             _lifetime = lifetime;
             ConcreteType = concreteType;
         }
 
         /// <summary>
-        /// Gets type to be created.
+        /// Gets type to be created (NULL for service registrations that use factory methods)
         /// </summary>
         public Type ConcreteType { get; private set; }
 

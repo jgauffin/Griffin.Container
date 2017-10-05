@@ -60,10 +60,14 @@
     <Compile Include="IEnumerableConstructorParameterTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MissingDependency.cs" />
+    <Compile Include="ServiceTests.cs" />
+    <Compile Include="Subjects\IFirstService.cs" />
     <Compile Include="Subjects\MyContainerModule.cs" />
     <Compile Include="Subjects\MySelf.cs" />
+    <Compile Include="Subjects\MySomeService.cs" />
     <Compile Include="Subjects\OneDepencency.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subjects\ISomeServiceInterface.cs" />
     <Compile Include="Subjects\Startable1.cs" />
     <Compile Include="Subjects\Startable2.cs" />
     <Compile Include="TypeExtensionsTests.cs" />

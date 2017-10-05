@@ -16,7 +16,7 @@ namespace Griffin.Container.InstanceStrategies
         /// <param name="concrete">The concrete.</param>
         public ScopedInstanceStrategy(Type concrete)
         {
-            _concrete = concrete;
+            _concrete = concrete ?? throw new ArgumentNullException(nameof(concrete));
         }
 
         #region IInstanceStrategy Members

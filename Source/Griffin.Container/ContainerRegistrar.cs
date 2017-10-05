@@ -142,7 +142,7 @@ namespace Griffin.Container
         /// <param name="assemblies">Assemblies to scan after module implementations</param>
         public void RegisterModules(params Assembly[] assemblies)
         {
-            var modType = typeof (IContainerModule);
+            var modType = typeof(IContainerModule);
             foreach (var assembly in assemblies)
             {
                 foreach (var type in assembly.GetTypes().Where(modType.IsAssignableFrom))
@@ -150,7 +150,7 @@ namespace Griffin.Container
                     if (type.IsAbstract || type.IsInterface)
                         continue;
 
-                    var module = (IContainerModule) Activator.CreateInstance(type);
+                    var module = (IContainerModule)Activator.CreateInstance(type);
                     module.Register(this);
                 }
             }
@@ -165,7 +165,7 @@ namespace Griffin.Container
         {
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
-            RegisterConcrete(typeof (TConcrete), lifetime);
+            RegisterConcrete(typeof(TConcrete), lifetime);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Griffin.Container
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
             var registration = CreateRegistration(null, lifetime);
-            registration.AddService(typeof (TService));
+            registration.AddService(typeof(TService));
             registration.InstanceStrategy = new DelegateStrategy<TService>(factory, lifetime);
             Add(registration);
         }
@@ -198,7 +198,7 @@ namespace Griffin.Container
             if (lifetime == Lifetime.Default)
                 lifetime = _defaultLifetime;
 
-            RegisterType(typeof (TService), typeof (TConcrete), lifetime);
+            RegisterType(typeof(TService), typeof(TConcrete), lifetime);
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace Griffin.Container
         public void RegisterInstance<TService>(TService instance) where TService : class
         {
             var registration = CreateRegistration(null, Lifetime.Singleton);
-            registration.AddService(typeof (TService));
+            registration.AddService(typeof(TService));
             registration.InstanceStrategy = new ExistingInstanceStrategy(instance);
             Add(registration);
         }
@@ -290,7 +290,7 @@ namespace Griffin.Container
         public Container Build()
         {
             var builder = new ContainerBuilder();
-            return (Container) builder.Build(this);
+            return (Container)builder.Build(this);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace Griffin.Container
             if (assembly == null) throw new ArgumentNullException("assembly");
             if (callback == null) throw new ArgumentNullException("callback");
 
-            var componentType = typeof (T);
+            var componentType = typeof(T);
 
             foreach (var type in assembly.GetTypes())
             {
@@ -343,7 +343,7 @@ namespace Griffin.Container
 
             var registration = CreateRegistration(concreteType, lifetime);
             registration.AddServices(_serviceFilter);
-            if( registerAsSelf)
+            if (registerAsSelf)
                 registration.AddService(concreteType);
             Add(registration);
         }
@@ -356,17 +356,34 @@ namespace Griffin.Container
         protected virtual void Add(ComponentRegistration registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
+
+            //using a factory method to build the service, no point in doing extra checks.
+            if (registration.ConcreteType == null)
+            {
+                _registrations.Add(registration);
+                return;
+            }
+
             var original = _registrations.FirstOrDefault(x => x.ConcreteType == registration.ConcreteType);
             if (original != null)
             {
                 if (original.Lifetime != registration.Lifetime)
                 {
+                    //using a factory method
+                    if (registration.ConcreteType == null)
+                        throw new NotSupportedException(
+                            $"Service(s) \'{string.Join(",", original.Services)}\' has already been registered with lifetime \'{original.Lifetime}\', this time the lifetime was specified as \'{registration.Lifetime}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
+
                     throw new NotSupportedException(
                         $"Concrete \'{registration.ConcreteType}\' has already been registered with lifetime \'{original.Lifetime}\', this time the lifetime was specified as \'{registration.Lifetime}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
                 }
                 if (registration.InstanceStrategy != original.InstanceStrategy &&
                     registration.InstanceStrategy != null)
                 {
+                    //using a factory method
+                    if (registration.ConcreteType == null)
+                        throw new NotSupportedException(
+                            $"Service(s) \'{string.Join(",", original.Services)}\' has already been registered with lifetime \'{original.Lifetime}\', this time the lifetime was specified as \'{registration.Lifetime}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
                     throw new NotSupportedException(
                         $"Concrete \'{registration.ConcreteType}\' has already been registered with scope type \'{original.InstanceStrategy}\', this time the scope type was specified as \'{registration.InstanceStrategy}\'. That leads to ambiguous behavior which is not allowed. Correct your setup.");
                 }
@@ -375,17 +392,18 @@ namespace Griffin.Container
                     if (original.Services.All(x => x != service))
                         registration.AddService(service);
                 }
-                
+
                 return;
             }
 
             _registrations.Add(registration);
+
         }
 
         /// <summary>
         /// Factory method for the component registration
         /// </summary>
-        /// <param name="concrete">concrete class</param>
+        /// <param name="concrete">concrete class, NULL for services that use factory methods</param>
         /// <param name="lifetime">lifetime</param>
         /// <returns>Registration object.</returns>
         protected virtual ComponentRegistration CreateRegistration(Type concrete, Lifetime lifetime)

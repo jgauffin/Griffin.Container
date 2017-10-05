@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>1.1.5</Version>
+    <Version>1.1.7</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>bin\$(Configuration)\netstandard2.0\Griffin.Container.xml</DocumentationFile>
   </PropertyGroup>
@@ -11,7 +11,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Easy to understand but powerful container.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>.NET Standard support</PackageReleaseNotes>
+    <PackageReleaseNotes>Corrected a bug when registering services using factory methods and different life times.</PackageReleaseNotes>
     <Copyright>Copyright 2017 © Jonas Gauffin. All rights reserved.</Copyright>
     <PackageTags>inversion-of-control dependency-injection netstandard</PackageTags>
     <RepositoryUrl>https://github.com/jgauffin/griffin.container</RepositoryUrl>
