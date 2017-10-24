@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Griffin.Container.BuildPlans;
 
 namespace Griffin.Container
@@ -28,6 +29,12 @@ namespace Griffin.Container
                 }
             }
         }
+
+
+        /// <summary>
+        /// Specifies if this is the main container or a lifetime scope.
+        /// </summary>
+        protected abstract bool IsChildContainer { get; }
 
         /// <summary>
         /// Get all service mappings
@@ -69,7 +76,28 @@ namespace Griffin.Container
             var bps = GetBuildPlans(service);
             if (bps == null)
                 throw new ServiceNotRegisteredException(service);
-            var instance = GetInstance(bps[0], service);
+
+            // Pick the same lifetime if a service has multiple implementations
+            // but with different lifetimes.
+            IBuildPlan chosenConcrete = null;
+            if (bps.Count > 1)
+            {
+                chosenConcrete = IsChildContainer
+                    ? bps.FirstOrDefault(x => x.Lifetime == Lifetime.Scoped)
+                    : bps.FirstOrDefault(x => x.Lifetime == Lifetime.Singleton);
+
+                // second best is the lowest lifetime.
+                if (chosenConcrete == null)
+                    chosenConcrete = bps.FirstOrDefault(x => x.Lifetime == Lifetime.Transient);
+            }
+
+            if (chosenConcrete == null)
+            {
+                chosenConcrete = bps[0];
+            }
+                
+
+            var instance = GetInstance(chosenConcrete, service);
             if (instance == null)
                 throw new InvalidOperationException(string.Format("Failed to construct '{0}'", service.FullName));
 
@@ -124,8 +152,7 @@ namespace Griffin.Container
         {
             if (requestedService == null) throw new ArgumentNullException("requestedService");
             var context = new CreateContext(this, RootStorage, ChildStorage, requestedService);
-            object instance;
-            bp.GetInstance(context, out instance);
+            bp.GetInstance(context, out var instance);
             return instance;
         }
 

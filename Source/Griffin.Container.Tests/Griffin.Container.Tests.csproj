@@ -60,7 +60,9 @@
     <Compile Include="IEnumerableConstructorParameterTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MissingDependency.cs" />
+    <Compile Include="MultipleImplementationsDifferentLifetimes.cs" />
     <Compile Include="ServiceTests.cs" />
+    <Compile Include="Subjects\AnotherFirstService.cs" />
     <Compile Include="Subjects\IFirstService.cs" />
     <Compile Include="Subjects\MyContainerModule.cs" />
     <Compile Include="Subjects\MySelf.cs" />

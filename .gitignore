@@ -44,3 +44,4 @@ source/Griffin.Container/Help/*
 !source/Griffin.Container/Help/documentation.chm
 Source/Griffin.Container/Griffin.Container.shfbproj_jgauffin
 Source/Help/*
+**/.vs/**

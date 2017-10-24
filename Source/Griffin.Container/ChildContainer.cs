@@ -43,6 +43,8 @@ namespace Griffin.Container
 
         #endregion
 
+        protected override bool IsChildContainer { get { return true; } }
+
         /// <summary>
         /// Gets storage for scoped objects.
         /// </summary>
