@@ -43,7 +43,10 @@ namespace Griffin.Container.BuildPlans
         /// <remarks>Uses the </remarks>
         protected override object Create(CreateContext context, object[] arguments)
         {
-            var type = ConcreteType.MakeGenericType(context.RequestedService.GetGenericArguments());
+
+            var type = ConcreteType.IsConstructedGenericType
+                ? ConcreteType
+                : ConcreteType.MakeGenericType(context.RequestedService.GetGenericArguments());
             return Activator.CreateInstance(type, arguments);
         }
     }

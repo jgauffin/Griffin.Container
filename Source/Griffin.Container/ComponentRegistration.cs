@@ -24,13 +24,13 @@ namespace Griffin.Container
         public ComponentRegistration(Type concreteType, Lifetime lifetime)
         {
             if (!Enum.IsDefined(typeof(Lifetime), lifetime))
-                throw new InvalidEnumArgumentException(nameof(lifetime), (int) lifetime, typeof(Lifetime));
+                throw new InvalidEnumArgumentException(nameof(lifetime), (int)lifetime, typeof(Lifetime));
             _lifetime = lifetime;
             ConcreteType = concreteType;
         }
 
         /// <summary>
-        /// Gets type to be created (NULL for service registrations that use factory methods)
+        /// Gets type to be created (NULL for requestedService registrations that use factory methods)
         /// </summary>
         public Type ConcreteType { get; private set; }
 
@@ -58,21 +58,53 @@ namespace Griffin.Container
         /// <summary>
         /// Checks if the current concrete implements the specified class.
         /// </summary>
-        /// <param name="service">Service to check for</param>
+        /// <param name="requestedService">Service to check for</param>
         /// <returns>true if implementing; otherwise false.</returns>
-        public bool Implements(Type service)
+        public bool Implements(Type requestedService)
         {
-            if (service == null) throw new ArgumentNullException("service");
-            return Services.Any(x => x == service);
+            if (requestedService == null) throw new ArgumentNullException("requestedService");
+
+            if (!requestedService.IsGenericType)
+                return Services.Any(x => x == requestedService);
+
+            foreach (var registeredService in Services)
+            {
+                if (!registeredService.IsGenericType)
+                    continue;
+                if (registeredService.GetGenericTypeDefinition() != requestedService.GetGenericTypeDefinition())
+                    continue;
+
+                var registeredServiceArgs = registeredService.GetGenericArguments();
+                var requestedServiceArgs = requestedService.GetGenericArguments();
+                if (registeredServiceArgs.Length != requestedServiceArgs.Length)
+                    continue;
+
+                if (registeredService.IsGenericTypeDefinition)
+                    return true;
+
+                bool found = true;
+                for (int i = 0; i < requestedServiceArgs.Length; i++)
+                {
+                    if (registeredServiceArgs[i] != requestedServiceArgs[i])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found)
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Add a new service.
+        /// Add a new requestedService.
         /// </summary>
         /// <param name="service">Service that the class implementes.</param>
         public void AddService(Type service)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException("requestedService");
 
             if (!service.IsAssignableFrom(service))
                 throw new InvalidOperationException(string.Format("Type {0} do not inherit/implement {1}",

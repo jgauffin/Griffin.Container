@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
-    <Version>1.1.8</Version>
+    <Version>1.1.9</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Griffin.Container.xml</DocumentationFile>
   </PropertyGroup>
@@ -11,7 +11,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Easy to understand but powerful container.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Added a new feature: A service may now have multiple implementations that are designed for different lifetimes.</PackageReleaseNotes>
+    <PackageReleaseNotes>Corrected support for open generics in constructors.</PackageReleaseNotes>
     <Copyright>Copyright 2017 © Jonas Gauffin. All rights reserved.</Copyright>
     <PackageTags>inversion-of-control dependency-injection netstandard</PackageTags>
     <RepositoryUrl>https://github.com/jgauffin/griffin.container</RepositoryUrl>

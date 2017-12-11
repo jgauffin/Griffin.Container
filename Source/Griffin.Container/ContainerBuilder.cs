@@ -84,6 +84,15 @@ namespace Griffin.Container
             {
                 if (_serviceMappings.TryGetValue(requestedService, out buildPlans))
                     return buildPlans;
+
+                if (requestedService.IsConstructedGenericType)
+                {
+                    var type = requestedService.GetGenericTypeDefinition();
+                    if (_serviceMappings.TryGetValue(type, out buildPlans))
+                        return buildPlans;
+
+                }
+                    
             }
 
             return null;
@@ -165,10 +174,11 @@ namespace Griffin.Container
                 else
                 {
 
-                    IList<IBuildPlan> bp;
-                    if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out bp))
+                    if (!_serviceMappings.TryGetValue(parameters[i].ParameterType, out IList<IBuildPlan> bp))
+                        _serviceMappings.TryGetValue(parameters[i].ParameterType.GetGenericTypeDefinition(), out bp);
+                    if (bp == null)
                         throw new InvalidOperationException(string.Format("Failed to find service {0}.",
-                                                                          parameters[i].ParameterType));
+                            parameters[i].ParameterType));
 
                     parameterBp = bp[0];
                 }
